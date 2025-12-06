@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Interativo - Copa 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --light: #ecf0f1;
+            --dark: #1a252f;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --group-bg: #fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: var(--radius);
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-left: 6px solid var(--accent);
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        h1 i {
+            color: var(--accent);
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+            transform: translateY(-3px);
+        }
+        
+        .btn-danger {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-3px);
+        }
+        
+        /* SEÇÃO DE GRUPOS - NO TOPO */
+        .section-grupos {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .section-grupos:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-grupos h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .groups-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 15px;
+        }
+        
+        .group-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--secondary);
+        }
+        
+        .group-card h3 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .team-list {
+            list-style: none;
+            min-height: 280px;
+        }
+        
+        .team-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: move;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .team-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .team-item.primeiro {
+            border-left-color: #2ecc71;
+            background: #f0fff4;
+        }
+        
+        .team-item.segundo {
+            border-left-color: #3498db;
+            background: #f0f8ff;
+        }
+        
+        .team-item.terceiro {
+            border-left-color: #f39c12;
+            background: #fffaf0;
+        }
+        
+        .team-item.quarto {
+            border-left-color: #95a5a6;
+            background: #f8f9fa;
+        }
+        
+        .team-pos {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .team-flag {
+            font-size: 1.5rem;
+        }
+        
+        .team-name {
+            flex-grow: 1;
+            font-weight: 500;
+        }
+        
+        .instructions {
+            background: #fff8e1;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .instructions h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        /* SEÇÃO DE MATA-MATA - ABAIXO DOS GRUPOS */
+        .section-mata-mata {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+        
+        .section-mata-mata h2 {
+            color: var(--primary);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* CHAVEAMENTO ESPELHADO */
+        .bracket-container {
+            position: relative;
+            min-height: 800px;
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+        
+        .bracket {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            min-width: 1400px;
+        }
+        
+        /* COLUNAS DO CHAVEAMENTO */
+        .round-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 750px;
+            width: 22%;
+        }
+        
+        .round-column.left {
+            align-items: flex-start;
+        }
+        
+        .round-column.right {
+            align-items: flex-end;
+        }
+        
+        .round-column.center {
+            width: 32%;
+            align-items: center;
+        }
+        
+        .round-title {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 30px;
+            width: 100%;
+        }
+        
+        .match {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e9ecef;
+            transition: all 0.2s ease;
+            width: 280px;
+            position: relative;
+        }
+        
+        .match:hover {
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+            border-color: var(--secondary);
+        }
+        
+        .team {
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .team:hover {
+            background: #f8f9fa;
+            transform: translateX(3px);
+        }
+        
+        .team.winner {
+            background: #e8f5e9;
+            font-weight: 700;
+            color: #2e7d32;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .team .flag {
+            font-size: 1.3rem;
+            margin-right: 12px;
+        }
+        
+        .match-connector {
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background: #ddd;
+            z-index: 1;
+        }
+        
+        .match-connector.left {
+            right: -50px;
+            top: 50%;
+        }
+        
+        .match-connector.right {
+            left: -50px;
+            top: 50%;
+        }
+        
+        .vertical-connector {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: #ddd;
+            z-index: 1;
+        }
+        
+        .final-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .final-match {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border: 3px solid var(--accent);
+            width: 320px;
+            position: relative;
+            margin: 20px auto;
+        }
+        
+        .final-match::before {
+            content: "🏆 FINAL";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        .third-place-match {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border: 2px solid #f39c12;
+            width: 280px;
+            position: relative;
+            margin-top: 40px;
+        }
+        
+        .third-place-match::before {
+            content: "🥉 3º LUGAR";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f39c12;
+            color: white;
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        .status-bar {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px 25px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .status-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+        
+        .status-icon.active {
+            background: var(--success);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-icon.waiting {
+            background: #f39c12;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .drag-info {
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .groups-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .bracket {
+                min-width: 1200px;
+            }
+            
+            .round-column {
+                width: 24%;
+            }
+            
+            .round-column.center {
+                width: 28%;
+            }
+            
+            .match {
+                width: 240px;
+            }
+            
+            .final-match {
+                width: 280px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .groups-container {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+            
+            .bracket {
+                flex-direction: column;
+                min-width: 100%;
+            }
+            
+            .round-column {
+                width: 100%;
+                height: auto;
+                margin-bottom: 40px;
+            }
+            
+            .round-column.center {
+                order: 3;
+            }
+            
+            .match {
+                width: 100%;
+                max-width: 300px;
+                margin: 10px auto;
+            }
+        }
+        
+        /* Botão de definir campeão manualmente */
+        .btn-champion {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-champion:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .close-modal {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-futbol"></i> Simulador Interativo - Copa do Mundo 2026</h1>
+            <p class="subtitle">Organize os grupos, simule os confrontos e defina o campeão</p>
+            
+            <div class="controls">
+                <button class="btn btn-primary" id="btn-montar-chaveamento">
+                    <i class="fas fa-sitemap"></i> Montar Chaveamento
+                </button>
+                <button class="btn btn-success" id="btn-reset-grupos">
+                    <i class="fas fa-redo"></i> Redefinir Grupos
+                </button>
+                <button class="btn btn-danger" id="btn-nova-simulacao">
+                    <i class="fas fa-fire"></i> Nova Simulação
+                </button>
+            </div>
+        </header>
+        
+        <!-- SEÇÃO DE GRUPOS (PARTE SUPERIOR) -->
+        <section class="section-grupos">
+            <h2><i class="fas fa-list-ol"></i> Fase de Grupos - Arraste para Definir Classificação</h2>
+            <p class="drag-info"><i class="fas fa-arrows-alt"></i> Arraste os times para definir a ordem (1º a 4º lugar) em cada grupo</p>
+            
+            <div class="groups-container" id="grupos-container">
+                <!-- Grupos serão gerados aqui -->
+            </div>
+            
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> Instruções:</h3>
+                <ol>
+                    <li><strong>Arraste os times</strong> para definir a ordem de classificação em cada grupo</li>
+                    <li>Os <strong>dois primeiros</strong> de cada grupo + <strong>8 melhores terceiros</strong> se classificam para a fase final</li>
+                    <li>Clique em <strong>"Montar Chaveamento"</strong> para gerar os confrontos da fase mata-mata</li>
+                    <li>Nos confrontos, <strong>clique em um time</strong> para defini-lo como vencedor (os próximos confrontos serão atualizados automaticamente)</li>
+                </ol>
+            </div>
+        </section>
+        
+        <!-- SEÇÃO DE MATA-MATA (PARTE INFERIOR) -->
+        <section class="section-mata-mata" id="section-mata-mata" style="display: none;">
+            <h2><i class="fas fa-trophy"></i> Fase Mata-Mata - Copa do Mundo 2026</h2>
+            
+            <div class="bracket-container">
+                <div class="bracket" id="chaveamento-container">
+                    <!-- COLUNA ESQUERDA: Oitavas de Final (Parte 1) -->
+                    <div class="round-column left" id="round-left">
+                        <div class="round-title">Oitavas de Final</div>
+                        <!-- Jogos 1-4 da rodada de 32 serão inseridos aqui -->
+                    </div>
+                    
+                    <!-- COLUNA CENTRO-ESQUERDA: Quartas de Final (Parte 1) -->
+                    <div class="round-column left" id="round-left-qf">
+                        <div class="round-title">Quartas de Final</div>
+                        <!-- Quartas 1-2 serão inseridas aqui -->
+                    </div>
+                    
+                    <!-- COLUNA CENTRAL: Semifinais e Final -->
+                    <div class="round-column center" id="round-center">
+                        <div class="round-title">Semifinais</div>
+                        <!-- Semifinais serão inseridas aqui -->
+                        
+                        <div class="final-container">
+                            <div class="match final-match" id="final-match">
+                                <div class="team" data-team="final-1">
+                                    <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                                </div>
+                                <div class="team" data-team="final-2">
+                                    <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn-champion" id="btn-definir-campeao" style="display: none;">
+                                <i class="fas fa-crown"></i> Definir Campeão
+                            </button>
+                            
+                            <div class="match third-place-match" id="third-place-match" style="display: none;">
+                                <div class="team" data-team="third-1">
+                                    <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                                </div>
+                                <div class="team" data-team="third-2">
+                                    <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- COLUNA CENTRO-DIREITA: Quartas de Final (Parte 2) -->
+                    <div class="round-column right" id="round-right-qf">
+                        <div class="round-title">Quartas de Final</div>
+                        <!-- Quartas 3-4 serão inseridas aqui -->
+                    </div>
+                    
+                    <!-- COLUNA DIREITA: Oitavas de Final (Parte 2) -->
+                    <div class="round-column right" id="round-right">
+                        <div class="round-title">Oitavas de Final</div>
+                        <!-- Jogos 5-8 da rodada de 32 serão inseridos aqui -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instructions" style="margin-top: 30px;">
+                <h3><i class="fas fa-mouse-pointer"></i> Como Interagir com o Chaveamento:</h3>
+                <ol>
+                    <li>Clique em qualquer time nos confrontos para defini-lo como vencedor</li>
+                    <li>Os confrontos subsequentes serão <strong>atualizados automaticamente</strong></li>
+                    <li>Quando as duas finalistas estiverem definidas, o botão "Definir Campeão" aparecerá</li>
+                    <li>Clique no botão para escolher o campeão da Copa 2026</li>
+                </ol>
+            </div>
+        </section>
+        
+        <div class="status-bar">
+            <div class="status">
+                <div class="status-icon active" id="status-grupos"></div>
+                <span>Fase de Grupos: <strong id="status-text-grupos">Pronta para organizar</strong></span>
+            </div>
+            <div class="status">
+                <div class="status-icon waiting" id="status-mata"></div>
+                <span>Fase Mata-Mata: <strong id="status-text-mata">Aguardando chaveamento</strong></span>
+            </div>
+            <div class="drag-info">
+                <i class="fas fa-hand-pointer"></i> Clique nos times para definir os vencedores
+            </div>
+        </div>
+        
+        <div class="modal" id="modal-campeao">
+            <div class="modal-content">
+                <h3><i class="fas fa-trophy"></i> Escolha o Campeão da Copa 2026</h3>
+                <div id="campeao-content" style="text-align: center; padding: 20px 0;">
+                    <!-- Opções de campeão serão inseridas aqui -->
+                </div>
+                <button class="close-modal" id="close-modal">Cancelar</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Simulador da Copa do Mundo 2026 | Dados baseados no sorteio oficial de 5 de dezembro de 2025</p>
+            <p>As 6 vagas de repescagem são representadas pelas equipes indicadas como "Playoff"</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dados dos grupos (conforme sorteio de 5/dez/2025)
+        const gruposData = [
+            { letra: 'A', times: ['México', 'África do Sul', 'Coreia do Sul', 'República Tcheca'] },
+            { letra: 'B', times: ['Canadá', 'Itália', 'Catar', 'Suíça'] },
+            { letra: 'C', times: ['Brasil', 'Marrocos', 'Haiti', 'Escócia'] },
+            { letra: 'D', times: ['Estados Unidos', 'Paraguai', 'Austrália', 'Turquia'] },
+            { letra: 'E', times: ['Alemanha', 'Curaçao', 'Costa do Marfim', 'Equador'] },
+            { letra: 'F', times: ['Holanda', 'Japão', 'Ucrânia', 'Tunísia'] },
+            { letra: 'G', times: ['Bélgica', 'Egito', 'Irã', 'Nova Zelândia'] },
+            { letra: 'H', times: ['Espanha', 'Cabo Verde', 'Arábia Saudita', 'Uruguai'] },
+            { letra: 'I', times: ['França', 'Senegal', 'Bolívia', 'Noruega'] },
+            { letra: 'J', times: ['Argentina', 'Argélia', 'Áustria', 'Jordânia'] },
+            { letra: 'K', times: ['Portugal', 'RD Congo', 'Uzbequistão', 'Colômbia'] },
+            { letra: 'L', times: ['Inglaterra', 'Croácia', 'Gana', 'Panamá'] }
+        ];
+
+        // Estado da simulação
+        let classificados = { primeiros: [], segundos: [], terceiros: [] };
+        let chaveamento = { 
+            r32: [],  // Rodada de 32 (oitavas)
+            r16: [],  // Oitavas de final
+            qf: [],   // Quartas de final
+            sf: [],   // Semifinais
+            final: null,
+            third: null
+        };
+        let grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
+        
+        // Bandeiras para os times
+        const flags = {
+            'Brasil': '🇧🇷', 'Argentina': '🇦🇷', 'França': '🇫🇷', 'Alemanha': '🇩🇪',
+            'Espanha': '🇪🇸', 'Inglaterra': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Portugal': '🇵🇹', 'Bélgica': '🇧🇪',
+            'Holanda': '🇳🇱', 'Itália': '🇮🇹', 'Croácia': '🇭🇷', 'Uruguai': '🇺🇾',
+            'México': '🇲🇽', 'Estados Unidos': '🇺🇸', 'Canadá': '🇨🇦', 'Japão': '🇯🇵',
+            'Coreia do Sul': '🇰🇷', 'Austrália': '🇦🇺', 'Marrocos': '🇲🇦', 'Senegal': '🇸🇳',
+            'Egito': '🇪🇬', 'Gana': '🇬🇭', 'Catar': '🇶🇦', 'Arábia Saudita': '🇸🇦',
+            'Irã': '🇮🇷', 'Colômbia': '🇨🇴', 'Paraguai': '🇵🇾', 'Equador': '🇪🇨',
+            'Suíça': '🇨🇭', 'Suécia': '🇸🇪', 'Polônia': '🇵🇱', 'Áustria': '🇦🇹',
+            'Ucrânia': '🇺🇦', 'Turquia': '🇹🇷', 'República Tcheca': '🇨🇿', 'Escócia': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+            'Noruega': '🇳🇴', 'Costa do Marfim': '🇨🇮', 'Tunísia': '🇹🇳', 'Argélia': '🇩🇿',
+            'Nigéria': '🇳🇬', 'Cabo Verde': '🇨🇻', 'Haiti': '🇭🇹', 'Panamá': '🇵🇦',
+            'Bolívia': '🇧🇴', 'RD Congo': '🇨🇩', 'Nova Zelândia': '🇳🇿', 'Jordânia': '🇯🇴',
+            'Uzbequistão': '🇺🇿', 'Curaçao': '🇨🇼', 'África do Sul': '🇿🇦'
+        };
+
+        // Inicializa a página
+        document.addEventListener('DOMContentLoaded', function() {
+            renderizarGrupos();
+            configurarEventos();
+            atualizarStatus();
+        });
+
+        // Renderiza os grupos com capacidade de arrastar
+        function renderizarGrupos() {
+            const container = document.getElementById('grupos-container');
+            container.innerHTML = '';
+            
+            grupoOrdenado.forEach(grupo => {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'group-card';
+                groupCard.innerHTML = `
+                    <h3>Grupo ${grupo.letra}</h3>
+                    <ul class="team-list" data-grupo="${grupo.letra}">
+                        ${grupo.times.map((time, index) => `
+                            <li class="team-item ${index === 0 ? 'primeiro' : index === 1 ? 'segundo' : index === 2 ? 'terceiro' : 'quarto'}" 
+                                data-time="${time}" draggable="true">
+                                <div class="team-pos">${index + 1}</div>
+                                <div class="team-flag">${flags[time] || '🏴'}</div>
+                                <div class="team-name">${time}</div>
+                                <i class="fas fa-arrows-alt-v" style="color: #aaa;"></i>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+                
+                container.appendChild(groupCard);
+            });
+            
+            // Configurar funcionalidade de arrastar e soltar
+            configurarDragAndDrop();
+        }
+
+        // Configura a funcionalidade de arrastar e soltar
+        function configurarDragAndDrop() {
+            const lists = document.querySelectorAll('.team-list');
+            
+            lists.forEach(list => {
+                // Eventos para arrastar
+                list.addEventListener('dragstart', (e) => {
+                    if (e.target.classList.contains('team-item')) {
+                        e.target.classList.add('dragging');
+                        e.dataTransfer.setData('text/plain', e.target.dataset.time);
+                        e.dataTransfer.setData('grupo', list.dataset.grupo);
+                    }
+                });
+                
+                list.addEventListener('dragend', (e) => {
+                    if (e.target.classList.contains('team-item')) {
+                        e.target.classList.remove('dragging');
+                        atualizarOrdemGrupo(list.dataset.grupo);
+                        atualizarStatus();
+                    }
+                });
+                
+                // Permitir soltar
+                list.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const dragging = document.querySelector('.dragging');
+                    if (dragging && list.dataset.grupo === e.dataTransfer.getData('grupo')) {
+                        const afterElement = getDragAfterElement(list, e.clientY);
+                        if (afterElement == null) {
+                            list.appendChild(dragging);
+                        } else {
+                            list.insertBefore(dragging, afterElement);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Função auxiliar para determinar onde soltar o elemento
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.team-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Atualiza a ordem dos times no grupo após arrastar
+        function atualizarOrdemGrupo(grupoLetra) {
+            const grupoIndex = grupoOrdenado.findIndex(g => g.letra === grupoLetra);
+            const list = document.querySelector(`[data-grupo="${grupoLetra}"]`);
+            const times = Array.from(list.children).map(item => item.dataset.time);
+            
+            grupoOrdenado[grupoIndex].times = times;
+            
+            // Atualizar classes de posição
+            Array.from(list.children).forEach((item, index) => {
+                item.className = 'team-item';
+                if (index === 0) item.classList.add('primeiro');
+                else if (index === 1) item.classList.add('segundo');
+                else if (index === 2) item.classList.add('terceiro');
+                else item.classList.add('quarto');
+                
+                // Atualizar número da posição
+                item.querySelector('.team-pos').textContent = index + 1;
+            });
+        }
+
+        // Calcula os classificados com base na ordem atual dos grupos
+        function calcularClassificados() {
+            classificados = { primeiros: [], segundos: [], terceiros: [] };
+            const todosTerceiros = [];
+            
+            grupoOrdenado.forEach(grupo => {
+                // Adiciona primeiro e segundo colocados
+                classificados.primeiros.push({ grupo: grupo.letra, time: grupo.times[0] });
+                classificados.segundos.push({ grupo: grupo.letra, time: grupo.times[1] });
+                
+                // Adiciona terceiro para possível classificação
+                todosTerceiros.push({
+                    grupo: grupo.letra,
+                    time: grupo.times[2],
+                    pts: Math.floor(Math.random() * 6) + 1,
+                    sg: Math.floor(Math.random() * 5) - 2,
+                    gp: Math.floor(Math.random() * 6) + 1
+                });
+            });
+            
+            // Ordena terceiros e pega os 8 melhores
+            todosTerceiros.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
+            classificados.terceiros = todosTerceiros.slice(0, 8);
+            
+            return classificados;
+        }
+
+        // Monta o chaveamento inicial (sem simular resultados)
+        function montarChaveamento() {
+            // Primeiro calcula os classificados
+            calcularClassificados();
+            
+            // Define os confrontos da rodada de 32 conforme formato oficial
+            const confrontosR32 = [
+                { m: 1, a: classificados.segundos.find(s => s.grupo === 'A').time, b: classificados.segundos.find(s => s.grupo === 'B').time },
+                { m: 2, a: classificados.primeiros.find(p => p.grupo === 'E').time, b: classificados.terceiros[0].time },
+                { m: 3, a: classificados.primeiros.find(p => p.grupo === 'F').time, b: classificados.segundos.find(s => s.grupo === 'C').time },
+                { m: 4, a: classificados.primeiros.find(p => p.grupo === 'C').time, b: classificados.segundos.find(s => s.grupo === 'F').time },
+                { m: 5, a: classificados.primeiros.find(p => p.grupo === 'I').time, b: classificados.terceiros[1].time },
+                { m: 6, a: classificados.segundos.find(s => s.grupo === 'E').time, b: classificados.segundos.find(s => s.grupo === 'I').time },
+                { m: 7, a: classificados.primeiros.find(p => p.grupo === 'A').time, b: classificados.terceiros[2].time },
+                { m: 8, a: classificados.primeiros.find(p => p.grupo === 'L').time, b: classificados.terceiros[3].time },
+                { m: 9, a: classificados.primeiros.find(p => p.grupo === 'D').time, b: classificados.terceiros[4].time },
+                { m: 10, a: classificados.primeiros.find(p => p.grupo === 'G').time, b: classificados.terceiros[5].time },
+                { m: 11, a: classificados.segundos.find(s => s.grupo === 'K').time, b: classificados.segundos.find(s => s.grupo === 'L').time },
+                { m: 12, a: classificados.primeiros.find(p => p.grupo === 'H').time, b: classificados.segundos.find(s => s.grupo === 'J').time },
+                { m: 13, a: classificados.primeiros.find(p => p.grupo === 'B').time, b: classificados.terceiros[6].time },
+                { m: 14, a: classificados.primeiros.find(p => p.grupo === 'J').time, b: classificados.segundos.find(s => s.grupo === 'H').time },
+                { m: 15, a: classificados.primeiros.find(p => p.grupo === 'K').time, b: classificados.terceiros[7].time },
+                { m: 16, a: classificados.segundos.find(s => s.grupo === 'D').time, b: classificados.segundos.find(s => s.grupo === 'G').time }
+            ];
+
+            // Inicializa os confrontos SEM vencedores
+            chaveamento.r32 = confrontosR32.map(conf => ({
+                ...conf,
+                vencedor: null
+            }));
+
+            // Inicializa as outras rodadas vazias
+            chaveamento.r16 = [];
+            chaveamento.qf = [];
+            chaveamento.sf = [];
+            chaveamento.final = null;
+            chaveamento.third = null;
+
+            // Renderiza o chaveamento
+            renderizarChaveamentoEspelhado();
+            atualizarStatus();
+            
+            // Mostra a seção de mata-mata
+            document.getElementById('section-mata-mata').style.display = 'block';
+            
+            // Atualiza botão
+            document.getElementById('btn-montar-chaveamento').innerHTML = '<i class="fas fa-sync-alt"></i> Remontar Chaveamento';
+        }
+
+        // Renderiza o chaveamento em layout espelhado
+        function renderizarChaveamentoEspelhado() {
+            // Limpa as colunas
+            document.getElementById('round-left').innerHTML = '<div class="round-title">Oitavas de Final</div>';
+            document.getElementById('round-left-qf').innerHTML = '<div class="round-title">Quartas de Final</div>';
+            document.getElementById('round-center').innerHTML = '<div class="round-title">Semifinais</div>';
+            document.getElementById('round-right-qf').innerHTML = '<div class="round-title">Quartas de Final</div>';
+            document.getElementById('round-right').innerHTML = '<div class="round-title">Oitavas de Final</div>';
+            
+            // Adiciona o container da final e terceiro lugar
+            const centerColumn = document.getElementById('round-center');
+            const finalContainer = document.createElement('div');
+            finalContainer.className = 'final-container';
+            finalContainer.innerHTML = `
+                <div class="match final-match" id="final-match">
+                    <div class="team" data-team="final-1">
+                        <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                    </div>
+                    <div class="team" data-team="final-2">
+                        <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                    </div>
+                </div>
+                
+                <button class="btn-champion" id="btn-definir-campeao" style="display: none;">
+                    <i class="fas fa-crown"></i> Definir Campeão
+                </button>
+                
+                <div class="match third-place-match" id="third-place-match" style="display: none;">
+                    <div class="team" data-team="third-1">
+                        <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                    </div>
+                    <div class="team" data-team="third-2">
+                        <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                    </div>
+                </div>
+            `;
+            centerColumn.appendChild(finalContainer);
+            
+            // Adiciona os confrontos da rodada de 32 (distribuídos entre esquerda e direita)
+            const leftColumn = document.getElementById('round-left');
+            const rightColumn = document.getElementById('round-right');
+            
+            // Primeira metade dos jogos (1-8) na coluna esquerda
+            for (let i = 0; i < 8; i++) {
+                if (chaveamento.r32[i]) {
+                    const match = criarElementoMatch(chaveamento.r32[i], 'r32', i);
+                    leftColumn.appendChild(match);
+                }
+            }
+            
+            // Segunda metade dos jogos (9-16) na coluna direita
+            for (let i = 8; i < 16; i++) {
+                if (chaveamento.r32[i]) {
+                    const match = criarElementoMatch(chaveamento.r32[i], 'r32', i);
+                    rightColumn.appendChild(match);
+                }
+            }
+            
+            // Configura eventos de clique
+            configurarEventosChaveamento();
+            
+            // Verifica se precisa mostrar o botão de definir campeão
+            verificarBotaoCampeao();
+        }
+
+        // Cria um elemento de confronto (match)
+        function criarElementoMatch(confronto, rodada, indice) {
+            const match = document.createElement('div');
+            match.className = 'match';
+            match.setAttribute('data-rodada', rodada);
+            match.setAttribute('data-indice', indice);
+            
+            const timeA = document.createElement('div');
+            timeA.className = `team ${confronto.vencedor === confronto.a ? 'winner' : ''}`;
+            timeA.setAttribute('data-time', confronto.a);
+            timeA.innerHTML = `<span><span class="flag">${flags[confronto.a] || '🏴'}</span> <span class="name">${confronto.a}</span></span>`;
+            
+            const timeB = document.createElement('div');
+            timeB.className = `team ${confronto.vencedor === confronto.b ? 'winner' : ''}`;
+            timeB.setAttribute('data-time', confronto.b);
+            timeB.innerHTML = `<span><span class="flag">${flags[confronto.b] || '🏴'}</span> <span class="name">${confronto.b}</span></span>`;
+            
+            match.appendChild(timeA);
+            match.appendChild(timeB);
+            
+            return match;
+        }
+
+        // Atualiza o chaveamento quando um vencedor é definido
+        function atualizarChaveamento(rodada, indice, timeVencedor) {
+            // Atualiza o confronto atual
+            if (rodada === 'r32') {
+                chaveamento.r32[indice].vencedor = timeVencedor;
+                
+                // Atualiza o próximo confronto (oitavas de final)
+                const proxIndice = Math.floor(indice / 2);
+                const proxRodada = 'r16';
+                
+                if (!chaveamento[proxRodada][proxIndice]) {
+                    // Cria um novo confronto se não existir
+                    const outroConfronto = indice % 2 === 0 ? chaveamento.r32[indice + 1] : chaveamento.r32[indice - 1];
+                    
+                    if (outroConfronto && outroConfronto.vencedor) {
+                        // Ambos os vencedores estão definidos, cria o próximo confronto
+                        const timeA = indice % 2 === 0 ? timeVencedor : outroConfronto.vencedor;
+                        const timeB = indice % 2 === 0 ? outroConfronto.vencedor : timeVencedor;
+                        
+                        chaveamento[proxRodada][proxIndice] = {
+                            a: timeA,
+                            b: timeB,
+                            vencedor: null
+                        };
+                        
+                        // Adiciona o confronto na coluna correspondente
+                        adicionarConfrontoNaColuna(proxRodada, proxIndice, chaveamento[proxRodada][proxIndice]);
+                    }
+                } else {
+                    // Atualiza o confronto existente
+                    if (indice % 2 === 0) {
+                        chaveamento[proxRodada][proxIndice].a = timeVencedor;
+                    } else {
+                        chaveamento[proxRodada][proxIndice].b = timeVencedor;
+                    }
+                    
+                    // Atualiza visualmente o confronto
+                    atualizarConfrontoVisualmente(proxRodada, proxIndice);
+                }
+                
+            } else if (rodada === 'r16') {
+                chaveamento.r16[indice].vencedor = timeVencedor;
+                
+                // Atualiza o próximo confronto (quartas de final)
+                const proxIndice = Math.floor(indice / 2);
+                const proxRodada = 'qf';
+                
+                if (!chaveamento[proxRodada][proxIndice]) {
+                    // Cria um novo confronto se não existir
+                    const outroConfronto = indice % 2 === 0 ? chaveamento.r16[indice + 1] : chaveamento.r16[indice - 1];
+                    
+                    if (outroConfronto && outroConfronto.vencedor) {
+                        // Ambos os vencedores estão definidos, cria o próximo confronto
+                        const timeA = indice % 2 === 0 ? timeVencedor : outroConfronto.vencedor;
+                        const timeB = indice % 2 === 0 ? outroConfronto.vencedor : timeVencedor;
+                        
+                        chaveamento[proxRodada][proxIndice] = {
+                            a: timeA,
+                            b: timeB,
+                            vencedor: null
+                        };
+                        
+                        // Adiciona o confronto na coluna correspondente
+                        adicionarConfrontoNaColuna(proxRodada, proxIndice, chaveamento[proxRodada][proxIndice]);
+                    }
+                } else {
+                    // Atualiza o confronto existente
+                    if (indice % 2 === 0) {
+                        chaveamento[proxRodada][proxIndice].a = timeVencedor;
+                    } else {
+                        chaveamento[proxRodada][proxIndice].b = timeVencedor;
+                    }
+                    
+                    // Atualiza visualmente o confronto
+                    atualizarConfrontoVisualmente(proxRodada, proxIndice);
+                }
+                
+            } else if (rodada === 'qf') {
+                chaveamento.qf[indice].vencedor = timeVencedor;
+                
+                // Atualiza o próximo confronto (semifinais)
+                const proxIndice = Math.floor(indice / 2);
+                const proxRodada = 'sf';
+                
+                if (!chaveamento[proxRodada][proxIndice]) {
+                    // Cria um novo confronto se não existir
+                    const outroConfronto = indice % 2 === 0 ? chaveamento.qf[indice + 1] : chaveamento.qf[indice - 1];
+                    
+                    if (outroConfronto && outroConfronto.vencedor) {
+                        // Ambos os vencedores estão definidos, cria o próximo confronto
+                        const timeA = indice % 2 === 0 ? timeVencedor : outroConfronto.vencedor;
+                        const timeB = indice % 2 === 0 ? outroConfronto.vencedor : timeVencedor;
+                        
+                        chaveamento[proxRodada][proxIndice] = {
+                            a: timeA,
+                            b: timeB,
+                            vencedor: null
+                        };
+                        
+                        // Adiciona o confronto na coluna central (semifinais)
+                        const centerColumn = document.getElementById('round-center');
+                        const match = criarElementoMatch(chaveamento[proxRodada][proxIndice], proxRodada, proxIndice);
+                        
+                        // Insere antes do container da final
+                        const finalContainer = document.querySelector('.final-container');
+                        centerColumn.insertBefore(match, finalContainer);
+                    }
+                } else {
+                    // Atualiza o confronto existente
+                    if (indice % 2 === 0) {
+                        chaveamento[proxRodada][proxIndice].a = timeVencedor;
+                    } else {
+                        chaveamento[proxRodada][proxIndice].b = timeVencedor;
+                    }
+                    
+                    // Atualiza visualmente o confronto
+                    atualizarConfrontoVisualmente(proxRodada, proxIndice);
+                }
+                
+            } else if (rodada === 'sf') {
+                chaveamento.sf[indice].vencedor = timeVencedor;
+                
+                // Atualiza a final
+                if (!chaveamento.final) {
+                    // Cria a final se não existir
+                    const outroConfronto = indice === 0 ? chaveamento.sf[1] : chaveamento.sf[0];
+                    
+                    if (outroConfronto && outroConfronto.vencedor) {
+                        // Ambos os finalistas estão definidos
+                        const timeA = indice === 0 ? timeVencedor : outroConfronto.vencedor;
+                        const timeB = indice === 0 ? outroConfronto.vencedor : timeVencedor;
+                        
+                        chaveamento.final = {
+                            a: timeA,
+                            b: timeB,
+                            vencedor: null
+                        };
+                        
+                        // Atualiza a final visualmente
+                        atualizarFinalVisualmente();
+                        
+                        // Mostra o botão para definir campeão
+                        document.getElementById('btn-definir-campeao').style.display = 'block';
+                        
+                        // Cria a disputa pelo 3º lugar
+                        const perdedorA = indice === 0 ? chaveamento.sf[0].a === timeVencedor ? chaveamento.sf[0].b : chaveamento.sf[0].a : chaveamento.sf[0].vencedor === outroConfronto.vencedor ? (chaveamento.sf[0].a === outroConfronto.vencedor ? chaveamento.sf[0].b : chaveamento.sf[0].a) : chaveamento.sf[0].vencedor;
+                        const perdedorB = indice === 1 ? chaveamento.sf[1].a === timeVencedor ? chaveamento.sf[1].b : chaveamento.sf[1].a : chaveamento.sf[1].vencedor === timeVencedor ? (chaveamento.sf[1].a === timeVencedor ? chaveamento.sf[1].b : chaveamento.sf[1].a) : chaveamento.sf[1].vencedor;
+                        
+                        chaveamento.third = {
+                            a: perdedorA,
+                            b: perdedorB,
+                            vencedor: null
+                        };
+                        
+                        // Mostra a disputa pelo 3º lugar
+                        document.getElementById('third-place-match').style.display = 'block';
+                        const terceiroMatch = document.getElementById('third-place-match');
+                        const teams = terceiroMatch.querySelectorAll('.team');
+                        teams[0].innerHTML = `<span><span class="flag">${flags[perdedorA] || '🏴'}</span> <span class="name">${perdedorA}</span></span>`;
+                        teams[1].innerHTML = `<span><span class="flag">${flags[perdedorB] || '🏴'}</span> <span class="name">${perdedorB}</span></span>`;
+                    }
+                } else {
+                    // Atualiza a final existente
+                    if (indice === 0) {
+                        chaveamento.final.a = timeVencedor;
+                    } else {
+                        chaveamento.final.b = timeVencedor;
+                    }
+                    
+                    // Atualiza visualmente a final
+                    atualizarFinalVisualmente();
+                }
+            }
+            
+            // Re-renderiza o chaveamento
+            renderizarChaveamentoEspelhado();
+            atualizarStatus();
+        }
+
+        // Adiciona um confronto na coluna apropriada
+        function adicionarConfrontoNaColuna(rodada, indice, confronto) {
+            let coluna;
+            
+            if (rodada === 'r16') {
+                // Oitavas de final: distribui entre colunas esquerda e direita
+                if (indice < 2) {
+                    coluna = document.getElementById('round-left-qf');
+                } else if (indice < 4) {
+                    coluna = document.getElementById('round-right-qf');
+                }
+            } else if (rodada === 'qf') {
+                // Quartas de final: distribui entre colunas centro-esquerda e centro-direita
+                if (indice < 2) {
+                    coluna = document.getElementById('round-left-qf');
+                } else {
+                    coluna = document.getElementById('round-right-qf');
+                }
+            }
+            
+            if (coluna) {
+                const match = criarElementoMatch(confronto, rodada, indice);
+                coluna.appendChild(match);
+            }
+        }
+
+        // Atualiza visualmente um confronto
+        function atualizarConfrontoVisualmente(rodada, indice) {
+            const confronto = chaveamento[rodada][indice];
+            if (!confronto) return;
+            
+            // Encontra o elemento do confronto
+            const selector = `.match[data-rodada="${rodada}"][data-indice="${indice}"]`;
+            const matchElement = document.querySelector(selector);
+            
+            if (matchElement) {
+                const teams = matchElement.querySelectorAll('.team');
+                if (teams.length >= 2) {
+                    // Atualiza o time A
+                    teams[0].className = `team ${confronto.vencedor === confronto.a ? 'winner' : ''}`;
+                    teams[0].setAttribute('data-time', confronto.a);
+                    teams[0].innerHTML = `<span><span class="flag">${flags[confronto.a] || '🏴'}</span> <span class="name">${confronto.a}</span></span>`;
+                    
+                    // Atualiza o time B
+                    teams[1].className = `team ${confronto.vencedor === confronto.b ? 'winner' : ''}`;
+                    teams[1].setAttribute('data-time', confronto.b);
+                    teams[1].innerHTML = `<span><span class="flag">${flags[confronto.b] || '🏴'}</span> <span class="name">${confronto.b}</span></span>`;
+                }
+            }
+        }
+
+        // Atualiza visualmente a final
+        function atualizarFinalVisualmente() {
+            if (!chaveamento.final) return;
+            
+            const finalMatch = document.getElementById('final-match');
+            const teams = finalMatch.querySelectorAll('.team');
+            
+            // Atualiza o time A
+            teams[0].innerHTML = `<span><span class="flag">${flags[chaveamento.final.a] || '🏴'}</span> <span class="name">${chaveamento.final.a}</span></span>`;
+            teams[0].className = `team ${chaveamento.final.vencedor === chaveamento.final.a ? 'winner' : ''}`;
+            
+            // Atualiza o time B
+            teams[1].innerHTML = `<span><span class="flag">${flags[chaveamento.final.b] || '🏴'}</span> <span class="name">${chaveamento.final.b}</span></span>`;
+            teams[1].className = `team ${chaveamento.final.vencedor === chaveamento.final.b ? 'winner' : ''}`;
+        }
+
+        // Verifica se deve mostrar o botão para definir campeão
+        function verificarBotaoCampeao() {
+            if (chaveamento.final && chaveamento.final.a && chaveamento.final.b) {
+                document.getElementById('btn-definir-campeao').style.display = 'block';
+            } else {
+                document.getElementById('btn-definir-campeao').style.display = 'none';
+            }
+        }
+
+        // Configura eventos para o chaveamento
+        function configurarEventosChaveamento() {
+            // Evento de clique nos times dos confrontos
+            document.addEventListener('click', function(e) {
+                const teamElement = e.target.closest('.team');
+                if (!teamElement) return;
+                
+                // Verifica se é um time de um confronto (não da final)
+                const matchElement = teamElement.closest('.match');
+                if (!matchElement) return;
+                
+                // Verifica se não é a final ou disputa de 3º lugar
+                if (matchElement.id === 'final-match' || matchElement.id === 'third-place-match') {
+                    return; // A final e 3º lugar são tratados separadamente
+                }
+                
+                const rodada = matchElement.getAttribute('data-rodada');
+                const indice = parseInt(matchElement.getAttribute('data-indice'));
+                const timeSelecionado = teamElement.getAttribute('data-time');
+                
+                if (rodada && !isNaN(indice) && timeSelecionado) {
+                    // Define o vencedor e atualiza o chaveamento
+                    atualizarChaveamento(rodada, indice, timeSelecionado);
+                }
+            });
+            
+            // Evento para o botão de definir campeão
+            document.getElementById('btn-definir-campeao').addEventListener('click', function() {
+                mostrarModalCampeao();
+            });
+            
+            // Evento para a disputa de 3º lugar
+            document.getElementById('third-place-match').addEventListener('click', function(e) {
+                const teamElement = e.target.closest('.team');
+                if (!teamElement || !chaveamento.third) return;
+                
+                const teamSide = teamElement.getAttribute('data-team');
+                const timeVencedor = teamSide === 'third-1' ? chaveamento.third.a : chaveamento.third.b;
+                
+                chaveamento.third.vencedor = timeVencedor;
+                
+                // Atualiza visualmente
+                const teams = this.querySelectorAll('.team');
+                teams[0].className = `team ${chaveamento.third.vencedor === chaveamento.third.a ? 'winner' : ''}`;
+                teams[1].className = `team ${chaveamento.third.vencedor === chaveamento.third.b ? 'winner' : ''}`;
+            });
+        }
+
+        // Mostra o modal para escolher o campeão
+        function mostrarModalCampeao() {
+            if (!chaveamento.final) return;
+            
+            const modal = document.getElementById('modal-campeao');
+            const content = document.getElementById('campeao-content');
+            
+            content.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
+                    <div class="team-option" data-campeao="${chaveamento.final.a}" style="padding: 20px; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; text-align: center; transition: all 0.3s;">
+                        <div style="font-size: 3rem;">${flags[chaveamento.final.a] || '🏴'}</div>
+                        <h3 style="margin: 10px 0;">${chaveamento.final.a}</h3>
+                        <p>Clique para escolher como campeão</p>
+                    </div>
+                    
+                    <div style="text-align: center; font-size: 1.5rem; color: #666;">VS</div>
+                    
+                    <div class="team-option" data-campeao="${chaveamento.final.b}" style="padding: 20px; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; text-align: center; transition: all 0.3s;">
+                        <div style="font-size: 3rem;">${flags[chaveamento.final.b] || '🏴'}</div>
+                        <h3 style="margin: 10px 0;">${chaveamento.final.b}</h3>
+                        <p>Clique para escolher como campeão</p>
+                    </div>
+                </div>
+            `;
+            
+            // Configura eventos para as opções
+            const options = content.querySelectorAll('.team-option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const campeao = this.getAttribute('data-campeao');
+                    definirCampeao(campeao);
+                });
+                
+                option.addEventListener('mouseenter', function() {
+                    this.style.borderColor = '#3498db';
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+                });
+                
+                option.addEventListener('mouseleave', function() {
+                    this.style.borderColor = '#ddd';
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+            
+            modal.style.display = 'flex';
+        }
+
+        // Define o campeão
+        function definirCampeao(campeao) {
+            if (!chaveamento.final) return;
+            
+            chaveamento.final.vencedor = campeao;
+            
+            // Atualiza visualmente a final
+            atualizarFinalVisualmente();
+            
+            // Fecha o modal
+            document.getElementById('modal-campeao').style.display = 'none';
+            
+            // Mostra mensagem de sucesso
+            alert(`🏆 ${campeao} é o campeão da Copa do Mundo 2026!`);
+            
+            // Atualiza o status
+            atualizarStatus();
+        }
+
+        // Atualiza a barra de status
+        function atualizarStatus() {
+            const statusGrupos = document.getElementById('status-grupos');
+            const statusTextGrupos = document.getElementById('status-text-grupos');
+            const statusMata = document.getElementById('status-mata');
+            const statusTextMata = document.getElementById('status-text-mata');
+            
+            // Status da fase de grupos
+            statusGrupos.className = 'status-icon active';
+            statusTextGrupos.textContent = 'Pronta para montar chaveamento';
+            
+            // Status do mata-mata
+            if (chaveamento.r32.length > 0) {
+                statusMata.className = 'status-icon active';
+                
+                // Conta quantos confrontos já têm vencedores
+                const totalConfrontos = chaveamento.r32.length + chaveamento.r16.length + chaveamento.qf.length + chaveamento.sf.length;
+                let confrontosComVencedor = 0;
+                
+                chaveamento.r32.forEach(c => { if (c.vencedor) confrontosComVencedor++; });
+                chaveamento.r16.forEach(c => { if (c.vencedor) confrontosComVencedor++; });
+                chaveamento.qf.forEach(c => { if (c.vencedor) confrontosComVencedor++; });
+                chaveamento.sf.forEach(c => { if (c.vencedor) confrontosComVencedor++; });
+                
+                if (chaveamento.final && chaveamento.final.vencedor) {
+                    statusTextMata.textContent = 'Finalizada! Campeão definido';
+                } else if (chaveamento.final) {
+                    statusTextMata.textContent = 'Final pronta para decisão';
+                } else {
+                    statusTextMata.textContent = `Em andamento (${confrontosComVencedor}/${totalConfrontos} confrontos decididos)`;
+                }
+            } else {
+                statusMata.className = 'status-icon waiting';
+                statusTextMata.textContent = 'Aguardando montagem do chaveamento';
+            }
+        }
+
+        // Configura os eventos dos botões
+        function configurarEventos() {
+            // Botão para montar chaveamento
+            document.getElementById('btn-montar-chaveamento').addEventListener('click', montarChaveamento);
+            
+            // Botão para redefinir grupos (voltar à ordem original)
+            document.getElementById('btn-reset-grupos').addEventListener('click', function() {
+                grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
+                renderizarGrupos();
+                atualizarStatus();
+            });
+            
+            // Botão para nova simulação completa
+            document.getElementById('btn-nova-simulacao').addEventListener('click', function() {
+                grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
+                chaveamento = { r32: [], r16: [], qf: [], sf: [], final: null, third: null };
+                renderizarGrupos();
+                document.getElementById('section-mata-mata').style.display = 'none';
+                atualizarStatus();
+                
+                // Restaura texto do botão
+                document.getElementById('btn-montar-chaveamento').innerHTML = '<i class="fas fa-sitemap"></i> Montar Chaveamento';
+            });
+            
+            // Fechar modal
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('modal-campeao').style.display = 'none';
+            });
+            
+            // Fechar modal clicando fora
+            document.getElementById('modal-campeao').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
