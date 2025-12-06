@@ -11,11 +11,11 @@
             --secondary: #3498db;
             --accent: #e74c3c;
             --success: #2ecc71;
+            --warning: #f39c12;
             --light: #ecf0f1;
             --dark: #1a252f;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             --radius: 12px;
-            --group-bg: #fff;
         }
         
         * {
@@ -93,9 +93,15 @@
             color: white;
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: #2980b9;
             transform: translateY(-3px);
+        }
+        
+        .btn-primary:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
         
         .btn-success {
@@ -103,8 +109,24 @@
             color: white;
         }
         
-        .btn-success:hover {
+        .btn-success:hover:not(:disabled) {
             background: #27ae60;
+            transform: translateY(-3px);
+        }
+        
+        .btn-success:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-warning:hover:not(:disabled) {
+            background: #e67e22;
             transform: translateY(-3px);
         }
         
@@ -125,11 +147,6 @@
             padding: 25px;
             margin-bottom: 40px;
             box-shadow: var(--shadow);
-            transition: transform 0.3s ease;
-        }
-        
-        .section-grupos:hover {
-            transform: translateY(-5px);
         }
         
         .section-grupos h2 {
@@ -180,7 +197,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            cursor: grab;
+            cursor: move;
             transition: all 0.2s ease;
             border-left: 4px solid transparent;
             user-select: none;
@@ -220,10 +237,6 @@
         .team-item.dragging {
             opacity: 0.5;
             transform: rotate(5deg);
-        }
-        
-        .team-item.over {
-            border-top: 2px dashed #3498db;
         }
         
         .team-pos {
@@ -292,6 +305,26 @@
             gap: 10px;
         }
         
+        /* CONTROLES DO MATA-MATA */
+        .mata-mata-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .phase-control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .phase-control .btn {
+            min-width: 200px;
+        }
+        
         /* CHAVEAMENTO ESPELHADO */
         .bracket-container {
             position: relative;
@@ -352,6 +385,10 @@
             transition: all 0.2s ease;
             width: 280px;
             position: relative;
+        }
+        
+        .match.completed {
+            border-color: var(--success);
         }
         
         .match:hover {
@@ -440,6 +477,30 @@
             font-size: 0.8rem;
             font-weight: bold;
             z-index: 2;
+        }
+        
+        .phase-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .progress-bar {
+            flex-grow: 1;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 4px;
+            transition: width 0.3s ease;
         }
         
         .status-bar {
@@ -549,6 +610,11 @@
                 max-width: 300px;
                 margin: 10px auto;
             }
+            
+            .mata-mata-controls {
+                flex-direction: column;
+                align-items: center;
+            }
         }
         
         /* Botão de definir campeão manualmente */
@@ -567,9 +633,15 @@
             transition: all 0.3s ease;
         }
         
-        .btn-champion:hover {
+        .btn-champion:hover:not(:disabled) {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-champion:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
         
         .modal {
@@ -646,7 +718,7 @@
                     <li><strong>Arraste os times</strong> para definir a ordem de classificação em cada grupo</li>
                     <li>Os <strong>dois primeiros</strong> de cada grupo + <strong>8 melhores terceiros</strong> se classificam para a fase final</li>
                     <li>Clique em <strong>"Montar Chaveamento"</strong> para gerar os confrontos da fase mata-mata</li>
-                    <li>Nos confrontos, <strong>clique em um time</strong> para defini-lo como vencedor (os próximos confrontos serão atualizados automaticamente)</li>
+                    <li>Selecione todos os vencedores de uma fase antes de avançar para a próxima usando os botões de controle</li>
                 </ol>
             </div>
         </section>
@@ -655,16 +727,21 @@
         <section class="section-mata-mata" id="section-mata-mata" style="display: none;">
             <h2><i class="fas fa-trophy"></i> Fase Mata-Mata - Copa do Mundo 2026</h2>
             
+            <!-- CONTROLES DO MATA-MATA -->
+            <div class="mata-mata-controls" id="mata-mata-controls">
+                <!-- Controles serão inseridos aqui via JavaScript -->
+            </div>
+            
             <div class="bracket-container">
                 <div class="bracket" id="chaveamento-container">
-                    <!-- COLUNA ESQUERDA: Oitavas de Final (Parte 1) -->
-                    <div class="round-column left" id="round-left">
+                    <!-- COLUNA ESQUERDA: Rodada de 32 -->
+                    <div class="round-column left" id="round-32-left">
                         <div class="round-title">Rodada de 32</div>
-                        <!-- Jogos 1-4 da rodada de 32 serão inseridos aqui -->
+                        <!-- Jogos 1-8 serão inseridos aqui -->
                     </div>
                     
-                    <!-- COLUNA CENTRO-ESQUERDA: Oitavas de Final (Parte 2) -->
-                    <div class="round-column left" id="round-left-16">
+                    <!-- COLUNA CENTRO-ESQUERDA: Oitavas de Final -->
+                    <div class="round-column left" id="round-16-left">
                         <div class="round-title">Oitavas de Final</div>
                         <!-- Oitavas 1-4 serão inseridas aqui -->
                     </div>
@@ -702,16 +779,16 @@
                         </div>
                     </div>
                     
-                    <!-- COLUNA CENTRO-DIREITA: Oitavas de Final (Parte 3) -->
-                    <div class="round-column right" id="round-right-16">
+                    <!-- COLUNA CENTRO-DIREITA: Oitavas de Final -->
+                    <div class="round-column right" id="round-16-right">
                         <div class="round-title">Oitavas de Final</div>
                         <!-- Oitavas 5-8 serão inseridas aqui -->
                     </div>
                     
-                    <!-- COLUNA DIREITA: Rodada de 32 (Parte 2) -->
-                    <div class="round-column right" id="round-right">
+                    <!-- COLUNA DIREITA: Rodada de 32 -->
+                    <div class="round-column right" id="round-32-right">
                         <div class="round-title">Rodada de 32</div>
-                        <!-- Jogos 5-8 da rodada de 32 serão inseridos aqui -->
+                        <!-- Jogos 9-16 serão inseridos aqui -->
                     </div>
                 </div>
             </div>
@@ -720,9 +797,10 @@
                 <h3><i class="fas fa-mouse-pointer"></i> Como Interagir com o Chaveamento:</h3>
                 <ol>
                     <li>Clique em qualquer time nos confrontos para defini-lo como vencedor</li>
-                    <li>Os confrontos subsequentes serão <strong>atualizados automaticamente</strong></li>
+                    <li>Selecione <strong>todos os vencedores</strong> da fase atual</li>
+                    <li>Clique no botão <strong>"Avançar para Oitavas"</strong> para gerar os próximos confrontos</li>
+                    <li>Repita o processo até chegar à final</li>
                     <li>Quando as duas finalistas estiverem definidas, o botão "Definir Campeão" aparecerá</li>
-                    <li>Clique no botão para escolher o campeão da Copa 2026</li>
                 </ol>
             </div>
         </section>
@@ -785,6 +863,7 @@
             third: null
         };
         let grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
+        let faseAtual = 'r32'; // r32, r16, qf, sf, final
         
         // Bandeiras para os times
         const flags = {
@@ -840,7 +919,7 @@
             configurarDragAndDrop();
         }
 
-        // Configura a funcionalidade de arrastar e soltar (CORRIGIDO)
+        // Configura a funcionalidade de arrastar e soltar
         function configurarDragAndDrop() {
             const lists = document.querySelectorAll('.team-list');
             let draggedItem = null;
@@ -880,15 +959,10 @@
                         list.insertBefore(dragging, afterElement);
                     }
                 });
-                
-                // Remove a classe over quando sai
-                list.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                });
             });
         }
 
-        // Função auxiliar para determinar onde soltar o elemento (CORRIGIDO)
+        // Função auxiliar para determinar onde soltar o elemento
         function getDragAfterElement(container, y) {
             const draggableElements = [...container.querySelectorAll('.team-item:not(.dragging)')];
             
@@ -989,10 +1063,14 @@
             chaveamento.sf = [];
             chaveamento.final = null;
             chaveamento.third = null;
+            
+            // Define a fase atual como rodada de 32
+            faseAtual = 'r32';
 
             // Renderiza o chaveamento
             renderizarChaveamentoEspelhado();
             atualizarStatus();
+            criarControlesFases();
             
             // Mostra a seção de mata-mata
             document.getElementById('section-mata-mata').style.display = 'block';
@@ -1001,10 +1079,195 @@
             document.getElementById('btn-montar-chaveamento').innerHTML = '<i class="fas fa-sync-alt"></i> Remontar Chaveamento';
         }
 
-        // Renderiza o chaveamento em layout espelhado (CORRIGIDO)
+        // Cria os controles para cada fase
+        function criarControlesFases() {
+            const controlsContainer = document.getElementById('mata-mata-controls');
+            controlsContainer.innerHTML = '';
+            
+            const fases = [
+                { id: 'r32', nome: 'Rodada de 32', btnText: 'Avançar para Oitavas', nextPhase: 'r16' },
+                { id: 'r16', nome: 'Oitavas de Final', btnText: 'Avançar para Quartas', nextPhase: 'qf' },
+                { id: 'qf', nome: 'Quartas de Final', btnText: 'Avançar para Semifinais', nextPhase: 'sf' },
+                { id: 'sf', nome: 'Semifinais', btnText: 'Avançar para Final', nextPhase: 'final' }
+            ];
+            
+            fases.forEach(fase => {
+                const phaseControl = document.createElement('div');
+                phaseControl.className = 'phase-control';
+                phaseControl.id = `control-${fase.id}`;
+                
+                // Verifica se esta fase está ativa
+                const isActive = fase.id === faseAtual;
+                const isCompleted = chaveamento[fase.id] && 
+                                   chaveamento[fase.id].length > 0 && 
+                                   chaveamento[fase.id].every(c => c && c.vencedor);
+                
+                // Cria o botão para avançar
+                const btn = document.createElement('button');
+                btn.className = `btn ${isActive ? 'btn-primary' : 'btn-success'}`;
+                btn.id = `btn-${fase.id}`;
+                btn.innerHTML = `<i class="fas fa-arrow-right"></i> ${fase.btnText}`;
+                btn.disabled = !isActive || !isCompleted;
+                
+                // Adiciona evento de clique
+                btn.addEventListener('click', () => {
+                    avancarParaProximaFase(fase.nextPhase);
+                });
+                
+                // Cria barra de progresso
+                const progress = document.createElement('div');
+                progress.className = 'phase-progress';
+                
+                if (chaveamento[fase.id] && chaveamento[fase.id].length > 0) {
+                    const vencedores = chaveamento[fase.id].filter(c => c && c.vencedor).length;
+                    const total = chaveamento[fase.id].length;
+                    const percent = (vencedores / total) * 100;
+                    
+                    progress.innerHTML = `
+                        <span>${vencedores}/${total} selecionados</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percent}%"></div>
+                        </div>
+                    `;
+                } else {
+                    progress.innerHTML = '<span>Aguardando...</span>';
+                }
+                
+                phaseControl.appendChild(btn);
+                phaseControl.appendChild(progress);
+                controlsContainer.appendChild(phaseControl);
+            });
+        }
+
+        // Avança para a próxima fase
+        function avancarParaProximaFase(proximaFase) {
+            // Verifica se todos os vencedores da fase atual foram definidos
+            const faseAtualDados = chaveamento[faseAtual];
+            if (!faseAtualDados || faseAtualDados.length === 0 || !faseAtualDados.every(c => c && c.vencedor)) {
+                alert(`Por favor, selecione todos os vencedores da ${getNomeFase(faseAtual)} antes de avançar.`);
+                return;
+            }
+            
+            // Gera os confrontos da próxima fase
+            if (proximaFase === 'r16') {
+                gerarOitavasDeFinal();
+            } else if (proximaFase === 'qf') {
+                gerarQuartasDeFinal();
+            } else if (proximaFase === 'sf') {
+                gerarSemifinais();
+            } else if (proximaFase === 'final') {
+                gerarFinal();
+            }
+            
+            // Atualiza a fase atual
+            faseAtual = proximaFase;
+            
+            // Re-renderiza o chaveamento
+            renderizarChaveamentoEspelhado();
+            criarControlesFases();
+            atualizarStatus();
+        }
+
+        // Gera os confrontos das oitavas de final
+        function gerarOitavasDeFinal() {
+            chaveamento.r16 = [];
+            
+            // Cada par de jogos da rodada de 32 gera um jogo das oitavas
+            for (let i = 0; i < chaveamento.r32.length; i += 2) {
+                const jogo1 = chaveamento.r32[i];
+                const jogo2 = chaveamento.r32[i + 1];
+                
+                if (jogo1 && jogo2 && jogo1.vencedor && jogo2.vencedor) {
+                    chaveamento.r16.push({
+                        m: chaveamento.r16.length + 1,
+                        a: jogo1.vencedor,
+                        b: jogo2.vencedor,
+                        vencedor: null
+                    });
+                }
+            }
+        }
+
+        // Gera os confrontos das quartas de final
+        function gerarQuartasDeFinal() {
+            chaveamento.qf = [];
+            
+            // Cada par de jogos das oitavas gera um jogo das quartas
+            for (let i = 0; i < chaveamento.r16.length; i += 2) {
+                const jogo1 = chaveamento.r16[i];
+                const jogo2 = chaveamento.r16[i + 1];
+                
+                if (jogo1 && jogo2 && jogo1.vencedor && jogo2.vencedor) {
+                    chaveamento.qf.push({
+                        m: chaveamento.qf.length + 1,
+                        a: jogo1.vencedor,
+                        b: jogo2.vencedor,
+                        vencedor: null
+                    });
+                }
+            }
+        }
+
+        // Gera os confrontos das semifinais
+        function gerarSemifinais() {
+            chaveamento.sf = [];
+            
+            // Cada par de jogos das quartas gera um jogo das semifinais
+            for (let i = 0; i < chaveamento.qf.length; i += 2) {
+                const jogo1 = chaveamento.qf[i];
+                const jogo2 = chaveamento.qf[i + 1];
+                
+                if (jogo1 && jogo2 && jogo1.vencedor && jogo2.vencedor) {
+                    chaveamento.sf.push({
+                        m: chaveamento.sf.length + 1,
+                        a: jogo1.vencedor,
+                        b: jogo2.vencedor,
+                        vencedor: null
+                    });
+                }
+            }
+        }
+
+        // Gera a final e disputa pelo 3º lugar
+        function gerarFinal() {
+            if (chaveamento.sf.length === 2 && chaveamento.sf[0].vencedor && chaveamento.sf[1].vencedor) {
+                // Final
+                chaveamento.final = {
+                    a: chaveamento.sf[0].vencedor,
+                    b: chaveamento.sf[1].vencedor,
+                    vencedor: null
+                };
+                
+                // Disputa pelo 3º lugar
+                const perdedor1 = chaveamento.sf[0].a === chaveamento.sf[0].vencedor ? 
+                                 chaveamento.sf[0].b : chaveamento.sf[0].a;
+                const perdedor2 = chaveamento.sf[1].a === chaveamento.sf[1].vencedor ? 
+                                 chaveamento.sf[1].b : chaveamento.sf[1].a;
+                
+                chaveamento.third = {
+                    a: perdedor1,
+                    b: perdedor2,
+                    vencedor: null
+                };
+            }
+        }
+
+        // Retorna o nome da fase
+        function getNomeFase(faseId) {
+            const fases = {
+                'r32': 'Rodada de 32',
+                'r16': 'Oitavas de Final',
+                'qf': 'Quartas de Final',
+                'sf': 'Semifinais',
+                'final': 'Final'
+            };
+            return fases[faseId] || faseId;
+        }
+
+        // Renderiza o chaveamento em layout espelhado
         function renderizarChaveamentoEspelhado() {
             // Limpa as colunas
-            const columns = ['round-left', 'round-left-16', 'round-center', 'round-right-16', 'round-right'];
+            const columns = ['round-32-left', 'round-16-left', 'round-center', 'round-16-right', 'round-32-right'];
             columns.forEach(col => {
                 const element = document.getElementById(col);
                 if (element) {
@@ -1042,14 +1305,14 @@
             centerColumn.appendChild(finalContainer);
             
             // Adiciona os confrontos da rodada de 32
-            const leftColumn = document.getElementById('round-left');
-            const rightColumn = document.getElementById('round-right');
+            const left32Column = document.getElementById('round-32-left');
+            const right32Column = document.getElementById('round-32-right');
             
             // Primeira metade dos jogos (1-8) na coluna esquerda
             for (let i = 0; i < 8; i++) {
                 if (chaveamento.r32[i]) {
                     const match = criarElementoMatch(chaveamento.r32[i], 'r32', i);
-                    leftColumn.appendChild(match);
+                    left32Column.appendChild(match);
                 }
             }
             
@@ -1057,16 +1320,68 @@
             for (let i = 8; i < 16; i++) {
                 if (chaveamento.r32[i]) {
                     const match = criarElementoMatch(chaveamento.r32[i], 'r32', i);
-                    rightColumn.appendChild(match);
+                    right32Column.appendChild(match);
                 }
             }
             
             // Adiciona os confrontos das oitavas se existirem
-            renderizarRodada('r16', 'round-left-16', 'round-right-16', 0, 8);
+            const left16Column = document.getElementById('round-16-left');
+            const right16Column = document.getElementById('round-16-right');
+            
+            if (chaveamento.r16 && chaveamento.r16.length > 0) {
+                // Primeira metade das oitavas (1-4) na coluna esquerda
+                for (let i = 0; i < 4; i++) {
+                    if (chaveamento.r16[i]) {
+                        const match = criarElementoMatch(chaveamento.r16[i], 'r16', i);
+                        left16Column.appendChild(match);
+                    }
+                }
+                
+                // Segunda metade das oitavas (5-8) na coluna direita
+                for (let i = 4; i < 8; i++) {
+                    if (chaveamento.r16[i]) {
+                        const match = criarElementoMatch(chaveamento.r16[i], 'r16', i);
+                        right16Column.appendChild(match);
+                    }
+                }
+            }
             
             // Adiciona os confrontos das quartas e semifinais no centro
-            renderizarRodadaNoCentro('qf', 'Quartas de Final');
-            renderizarRodadaNoCentro('sf', 'Semifinais');
+            if (chaveamento.qf && chaveamento.qf.length > 0) {
+                // Adiciona título das quartas
+                const quartasTitle = document.createElement('div');
+                quartasTitle.className = 'round-title';
+                quartasTitle.textContent = 'Quartas de Final';
+                centerColumn.insertBefore(quartasTitle, finalContainer);
+                
+                // Adiciona os confrontos das quartas
+                chaveamento.qf.forEach((confronto, idx) => {
+                    if (confronto) {
+                        const match = criarElementoMatch(confronto, 'qf', idx);
+                        centerColumn.insertBefore(match, finalContainer);
+                    }
+                });
+            }
+            
+            if (chaveamento.sf && chaveamento.sf.length > 0) {
+                // Adiciona título das semifinais
+                const semifinaisTitle = document.createElement('div');
+                semifinaisTitle.className = 'round-title';
+                semifinaisTitle.textContent = 'Semifinais';
+                semifinaisTitle.style.marginTop = '40px';
+                centerColumn.insertBefore(semifinaisTitle, finalContainer);
+                
+                // Adiciona os confrontos das semifinais
+                chaveamento.sf.forEach((confronto, idx) => {
+                    if (confronto) {
+                        const match = criarElementoMatch(confronto, 'sf', idx);
+                        centerColumn.insertBefore(match, finalContainer);
+                    }
+                });
+            }
+            
+            // Atualiza a final e disputa pelo 3º lugar se existirem
+            atualizarFinalETerceiroLugar();
             
             // Configura eventos de clique
             configurarEventosChaveamento();
@@ -1077,73 +1392,19 @@
         
         function getRoundTitle(colId) {
             switch(colId) {
-                case 'round-left': return 'Rodada de 32';
-                case 'round-left-16': return 'Oitavas de Final';
-                case 'round-center': return 'Quartas/Semifinais';
-                case 'round-right-16': return 'Oitavas de Final';
-                case 'round-right': return 'Rodada de 32';
+                case 'round-32-left': return 'Rodada de 32';
+                case 'round-32-right': return 'Rodada de 32';
+                case 'round-16-left': return 'Oitavas de Final';
+                case 'round-16-right': return 'Oitavas de Final';
+                case 'round-center': return 'Finais';
                 default: return 'Rodada';
             }
-        }
-        
-        function renderizarRodada(rodada, colunaEsquerdaId, colunaDireitaId, inicio, fim) {
-            const colEsq = document.getElementById(colunaEsquerdaId);
-            const colDir = document.getElementById(colunaDireitaId);
-            
-            if (!chaveamento[rodada] || chaveamento[rodada].length === 0) return;
-            
-            // Primeira metade na coluna esquerda
-            for (let i = inicio; i < Math.min(fim/2, chaveamento[rodada].length); i++) {
-                if (chaveamento[rodada][i]) {
-                    const match = criarElementoMatch(chaveamento[rodada][i], rodada, i);
-                    colEsq.appendChild(match);
-                }
-            }
-            
-            // Segunda metade na coluna direita
-            for (let i = Math.max(inicio, fim/2); i < Math.min(fim, chaveamento[rodada].length); i++) {
-                if (chaveamento[rodada][i]) {
-                    const match = criarElementoMatch(chaveamento[rodada][i], rodada, i);
-                    colDir.appendChild(match);
-                }
-            }
-        }
-        
-        function renderizarRodadaNoCentro(rodada, titulo) {
-            const centerColumn = document.getElementById('round-center');
-            if (!chaveamento[rodada] || chaveamento[rodada].length === 0) return;
-            
-            // Encontra onde inserir (antes do final-container)
-            const finalContainer = centerColumn.querySelector('.final-container');
-            
-            // Cria um container para esta rodada
-            const rodadaContainer = document.createElement('div');
-            rodadaContainer.className = 'rodada-centro';
-            
-            // Adiciona título se for a primeira vez
-            if (!centerColumn.querySelector(`.rodada-titulo-${rodada}`)) {
-                const tituloElement = document.createElement('div');
-                tituloElement.className = `round-title rodada-titulo-${rodada}`;
-                tituloElement.textContent = titulo;
-                rodadaContainer.appendChild(tituloElement);
-            }
-            
-            // Adiciona os confrontos
-            chaveamento[rodada].forEach((confronto, idx) => {
-                if (confronto) {
-                    const match = criarElementoMatch(confronto, rodada, idx);
-                    rodadaContainer.appendChild(match);
-                }
-            });
-            
-            // Insere antes do final container
-            centerColumn.insertBefore(rodadaContainer, finalContainer);
         }
 
         // Cria um elemento de confronto (match)
         function criarElementoMatch(confronto, rodada, indice) {
             const match = document.createElement('div');
-            match.className = 'match';
+            match.className = `match ${confronto.vencedor ? 'completed' : ''}`;
             match.setAttribute('data-rodada', rodada);
             match.setAttribute('data-indice', indice);
             
@@ -1163,149 +1424,35 @@
             return match;
         }
 
-        // Atualiza o chaveamento quando um vencedor é definido (CORRIGIDO E SIMPLIFICADO)
-        function atualizarChaveamento(rodada, indice, timeVencedor) {
-            console.log(`Atualizando: ${rodada}[${indice}] = ${timeVencedor}`);
-            
-            // Atualiza o confronto atual
-            if (!chaveamento[rodada][indice]) return;
-            
-            chaveamento[rodada][indice].vencedor = timeVencedor;
-            
-            // Determina qual é o próximo confronto
-            let proximaRodada, proximoIndice, posicaoProximo;
-            
-            if (rodada === 'r32') {
-                proximaRodada = 'r16';
-                proximoIndice = Math.floor(indice / 2);
-                posicaoProximo = indice % 2; // 0 para time A, 1 para time B
-            } else if (rodada === 'r16') {
-                proximaRodada = 'qf';
-                proximoIndice = Math.floor(indice / 2);
-                posicaoProximo = indice % 2;
-            } else if (rodada === 'qf') {
-                proximaRodada = 'sf';
-                proximoIndice = Math.floor(indice / 2);
-                posicaoProximo = indice % 2;
-            } else if (rodada === 'sf') {
-                // Para semifinais, vamos para a final
-                proximaRodada = 'final';
-                proximoIndice = 0;
-                posicaoProximo = indice; // 0 para time A da final, 1 para time B
-            }
-            
-            // Se não for a final, atualiza o próximo confronto
-            if (proximaRodada !== 'final') {
-                // Inicializa o array da próxima rodada se necessário
-                if (!chaveamento[proximaRodada]) {
-                    chaveamento[proximaRodada] = [];
+        // Atualiza a final e disputa pelo 3º lugar
+        function atualizarFinalETerceiroLugar() {
+            // Atualiza a final
+            if (chaveamento.final) {
+                const finalMatch = document.getElementById('final-match');
+                const teams = finalMatch.querySelectorAll('.team');
+                
+                if (chaveamento.final.a) {
+                    teams[0].innerHTML = `<span><span class="flag">${flags[chaveamento.final.a] || '🏴'}</span> <span class="name">${chaveamento.final.a}</span></span>`;
+                    teams[0].className = `team ${chaveamento.final.vencedor === chaveamento.final.a ? 'winner' : ''}`;
                 }
                 
-                // Cria o próximo confronto se não existir
-                if (!chaveamento[proximaRodada][proximoIndice]) {
-                    chaveamento[proximaRodada][proximoIndice] = {
-                        a: null,
-                        b: null,
-                        vencedor: null
-                    };
-                }
-                
-                // Atribui o vencedor à posição correta
-                if (posicaoProximo === 0) {
-                    chaveamento[proximaRodada][proximoIndice].a = timeVencedor;
-                } else {
-                    chaveamento[proximaRodada][proximoIndice].b = timeVencedor;
-                }
-                
-                // Verifica se o outro time já está definido (do outro confronto)
-                const outroIndice = (indice % 2 === 0) ? indice + 1 : indice - 1;
-                if (chaveamento[rodada][outroIndice] && chaveamento[rodada][outroIndice].vencedor) {
-                    // Ambos os vencedores estão definidos, podemos criar/atualizar o próximo confronto
-                    const outroVencedor = chaveamento[rodada][outroIndice].vencedor;
-                    
-                    // Garante que os times estão na ordem correta
-                    if (posicaoProximo === 0) {
-                        chaveamento[proximaRodada][proximoIndice].b = outroVencedor;
-                    } else {
-                        chaveamento[proximaRodada][proximoIndice].a = outroVencedor;
-                    }
-                }
-            } else {
-                // É a final
-                if (!chaveamento.final) {
-                    chaveamento.final = {
-                        a: null,
-                        b: null,
-                        vencedor: null
-                    };
-                }
-                
-                if (posicaoProximo === 0) {
-                    chaveamento.final.a = timeVencedor;
-                } else {
-                    chaveamento.final.b = timeVencedor;
-                }
-                
-                // Verifica se temos os dois finalistas
-                const outraSemifinal = (indice === 0) ? 1 : 0;
-                if (chaveamento.sf[outraSemifinal] && chaveamento.sf[outraSemifinal].vencedor) {
-                    const outroFinalista = chaveamento.sf[outraSemifinal].vencedor;
-                    
-                    if (posicaoProximo === 0) {
-                        chaveamento.final.b = outroFinalista;
-                    } else {
-                        chaveamento.final.a = outroFinalista;
-                    }
-                    
-                    // Cria a disputa pelo 3º lugar
-                    if (!chaveamento.third) {
-                        const perdedorA = (chaveamento.sf[0].vencedor === chaveamento.final.a) ? 
-                            (chaveamento.sf[0].a === chaveamento.final.a ? chaveamento.sf[0].b : chaveamento.sf[0].a) : 
-                            chaveamento.sf[0].vencedor;
-                        
-                        const perdedorB = (chaveamento.sf[1].vencedor === chaveamento.final.b) ?
-                            (chaveamento.sf[1].a === chaveamento.final.b ? chaveamento.sf[1].b : chaveamento.sf[1].a) :
-                            chaveamento.sf[1].vencedor;
-                        
-                        chaveamento.third = {
-                            a: perdedorA,
-                            b: perdedorB,
-                            vencedor: null
-                        };
-                    }
+                if (chaveamento.final.b) {
+                    teams[1].innerHTML = `<span><span class="flag">${flags[chaveamento.final.b] || '🏴'}</span> <span class="name">${chaveamento.final.b}</span></span>`;
+                    teams[1].className = `team ${chaveamento.final.vencedor === chaveamento.final.b ? 'winner' : ''}`;
                 }
             }
             
-            // Atualiza visualmente o confronto atual
-            atualizarConfrontoVisualmente(rodada, indice);
-            
-            // Re-renderiza todo o chaveamento
-            renderizarChaveamentoEspelhado();
-            atualizarStatus();
-            
-            console.log('Chaveamento atualizado:', chaveamento);
-        }
-
-        // Atualiza visualmente um confronto
-        function atualizarConfrontoVisualmente(rodada, indice) {
-            const confronto = chaveamento[rodada][indice];
-            if (!confronto) return;
-            
-            // Encontra o elemento do confronto
-            const selector = `.match[data-rodada="${rodada}"][data-indice="${indice}"]`;
-            const matchElement = document.querySelector(selector);
-            
-            if (matchElement) {
-                const teams = matchElement.querySelectorAll('.team');
-                if (teams.length >= 2) {
-                    // Atualiza o time A
-                    teams[0].className = `team ${confronto.vencedor === confronto.a ? 'winner' : ''}`;
-                    teams[0].setAttribute('data-time', confronto.a);
-                    
-                    // Atualiza o time B
-                    teams[1].className = `team ${confronto.vencedor === confronto.b ? 'winner' : ''}`;
-                    teams[1].setAttribute('data-time', confronto.b);
-                }
+            // Atualiza a disputa pelo 3º lugar
+            if (chaveamento.third) {
+                document.getElementById('third-place-match').style.display = 'block';
+                const terceiroMatch = document.getElementById('third-place-match');
+                const teams = terceiroMatch.querySelectorAll('.team');
+                
+                teams[0].innerHTML = `<span><span class="flag">${flags[chaveamento.third.a] || '🏴'}</span> <span class="name">${chaveamento.third.a}</span></span>`;
+                teams[0].className = `team ${chaveamento.third.vencedor === chaveamento.third.a ? 'winner' : ''}`;
+                
+                teams[1].innerHTML = `<span><span class="flag">${flags[chaveamento.third.b] || '🏴'}</span> <span class="name">${chaveamento.third.b}</span></span>`;
+                teams[1].className = `team ${chaveamento.third.vencedor === chaveamento.third.b ? 'winner' : ''}`;
             }
         }
 
@@ -1329,9 +1476,25 @@
                 const indice = parseInt(matchElement.getAttribute('data-indice'));
                 const timeSelecionado = teamElement.getAttribute('data-time');
                 
+                // Verifica se estamos na fase correta
+                if (rodada !== faseAtual) {
+                    alert(`Você só pode selecionar vencedores na fase atual: ${getNomeFase(faseAtual)}`);
+                    return;
+                }
+                
                 if (rodada && !isNaN(indice) && timeSelecionado) {
-                    // Define o vencedor e atualiza o chaveamento
-                    atualizarChaveamento(rodada, indice, timeSelecionado);
+                    // Define o vencedor
+                    const confronto = chaveamento[rodada][indice];
+                    if (confronto && (timeSelecionado === confronto.a || timeSelecionado === confronto.b)) {
+                        confronto.vencedor = timeSelecionado;
+                        
+                        // Atualiza visualmente
+                        atualizarConfrontoVisualmente(rodada, indice);
+                        
+                        // Atualiza controles e status
+                        criarControlesFases();
+                        atualizarStatus();
+                    }
                 }
             });
             
@@ -1357,43 +1520,36 @@
             });
         }
 
+        // Atualiza visualmente um confronto
+        function atualizarConfrontoVisualmente(rodada, indice) {
+            const confronto = chaveamento[rodada][indice];
+            if (!confronto) return;
+            
+            // Encontra o elemento do confronto
+            const selector = `.match[data-rodada="${rodada}"][data-indice="${indice}"]`;
+            const matchElement = document.querySelector(selector);
+            
+            if (matchElement) {
+                const teams = matchElement.querySelectorAll('.team');
+                if (teams.length >= 2) {
+                    // Atualiza o time A
+                    teams[0].className = `team ${confronto.vencedor === confronto.a ? 'winner' : ''}`;
+                    
+                    // Atualiza o time B
+                    teams[1].className = `team ${confronto.vencedor === confronto.b ? 'winner' : ''}`;
+                    
+                    // Marca o confronto como completado
+                    matchElement.classList.add('completed');
+                }
+            }
+        }
+
         // Verifica se deve mostrar o botão para definir campeão
         function verificarBotaoCampeao() {
             if (chaveamento.final && chaveamento.final.a && chaveamento.final.b) {
                 document.getElementById('btn-definir-campeao').style.display = 'block';
-                // Atualiza visualmente a final
-                atualizarFinalVisualmente();
             } else {
                 document.getElementById('btn-definir-campeao').style.display = 'none';
-            }
-            
-            // Mostra a disputa pelo 3º lugar se existir
-            if (chaveamento.third) {
-                document.getElementById('third-place-match').style.display = 'block';
-                const terceiroMatch = document.getElementById('third-place-match');
-                const teams = terceiroMatch.querySelectorAll('.team');
-                teams[0].innerHTML = `<span><span class="flag">${flags[chaveamento.third.a] || '🏴'}</span> <span class="name">${chaveamento.third.a}</span></span>`;
-                teams[1].innerHTML = `<span><span class="flag">${flags[chaveamento.third.b] || '🏴'}</span> <span class="name">${chaveamento.third.b}</span></span>`;
-            }
-        }
-
-        // Atualiza visualmente a final
-        function atualizarFinalVisualmente() {
-            if (!chaveamento.final) return;
-            
-            const finalMatch = document.getElementById('final-match');
-            const teams = finalMatch.querySelectorAll('.team');
-            
-            // Atualiza o time A
-            if (chaveamento.final.a) {
-                teams[0].innerHTML = `<span><span class="flag">${flags[chaveamento.final.a] || '🏴'}</span> <span class="name">${chaveamento.final.a}</span></span>`;
-                teams[0].className = `team ${chaveamento.final.vencedor === chaveamento.final.a ? 'winner' : ''}`;
-            }
-            
-            // Atualiza o time B
-            if (chaveamento.final.b) {
-                teams[1].innerHTML = `<span><span class="flag">${flags[chaveamento.final.b] || '🏴'}</span> <span class="name">${chaveamento.final.b}</span></span>`;
-                teams[1].className = `team ${chaveamento.final.vencedor === chaveamento.final.b ? 'winner' : ''}`;
             }
         }
 
@@ -1453,16 +1609,16 @@
             chaveamento.final.vencedor = campeao;
             
             // Atualiza visualmente a final
-            atualizarFinalVisualmente();
+            atualizarFinalETerceiroLugar();
             
             // Fecha o modal
             document.getElementById('modal-campeao').style.display = 'none';
             
-            // Mostra mensagem de sucesso
-            alert(`🏆 ${campeao} é o campeão da Copa do Mundo 2026!`);
-            
             // Atualiza o status
             atualizarStatus();
+            
+            // Mostra mensagem de sucesso
+            alert(`🏆 ${campeao} é o campeão da Copa do Mundo 2026!`);
         }
 
         // Atualiza a barra de status
@@ -1480,25 +1636,12 @@
             if (chaveamento.r32.length > 0) {
                 statusMata.className = 'status-icon active';
                 
-                // Conta quantos confrontos já têm vencedores
-                const totalConfrontos = chaveamento.r32.length + 
-                    (chaveamento.r16 ? chaveamento.r16.length : 0) + 
-                    (chaveamento.qf ? chaveamento.qf.length : 0) + 
-                    (chaveamento.sf ? chaveamento.sf.length : 0);
-                    
-                let confrontosComVencedor = 0;
-                
-                chaveamento.r32.forEach(c => { if (c.vencedor) confrontosComVencedor++; });
-                if (chaveamento.r16) chaveamento.r16.forEach(c => { if (c && c.vencedor) confrontosComVencedor++; });
-                if (chaveamento.qf) chaveamento.qf.forEach(c => { if (c && c.vencedor) confrontosComVencedor++; });
-                if (chaveamento.sf) chaveamento.sf.forEach(c => { if (c && c.vencedor) confrontosComVencedor++; });
-                
                 if (chaveamento.final && chaveamento.final.vencedor) {
                     statusTextMata.textContent = 'Finalizada! Campeão definido';
                 } else if (chaveamento.final && chaveamento.final.a && chaveamento.final.b) {
                     statusTextMata.textContent = 'Final pronta para decisão';
                 } else {
-                    statusTextMata.textContent = `Em andamento (${confrontosComVencedor}/${totalConfrontos} confrontos decididos)`;
+                    statusTextMata.textContent = `${getNomeFase(faseAtual)} em andamento`;
                 }
             } else {
                 statusMata.className = 'status-icon waiting';
@@ -1522,6 +1665,7 @@
             document.getElementById('btn-nova-simulacao').addEventListener('click', function() {
                 grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
                 chaveamento = { r32: [], r16: [], qf: [], sf: [], final: null, third: null };
+                faseAtual = 'r32';
                 renderizarGrupos();
                 document.getElementById('section-mata-mata').style.display = 'none';
                 atualizarStatus();
