@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Interativo - Copa 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a2980;
+            --secondary: #26d0ce;
+            --accent: #ff4757;
+            --success: #2ed573;
+            --warning: #ffa502;
+            --light: #f1f2f6;
+            --dark: #2f3542;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c2461 0%, #1e3799 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        /* HEADER */
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: var(--radius);
+            padding: 30px 40px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-bottom: 5px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        h1 i {
+            color: var(--accent);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 15px 32px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary), #1e90ff);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(30, 144, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #1dd1a1);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 213, 115, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent), #ff3838);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ff7f00);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 165, 2, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* INSTRUÇÕES NO TOPO */
+        .instructions-top {
+            background: linear-gradient(135deg, #fff8e1, #fff);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #ffd32a;
+            box-shadow: var(--shadow);
+        }
+        
+        .instructions-top h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+        }
+        
+        .instructions-top ol {
+            padding-left: 25px;
+            line-height: 1.8;
+        }
+        
+        .instructions-top li {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        
+        /* SEÇÃO DOS GRUPOS */
+        .groups-section {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+        
+        .groups-section h2 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .groups-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .group-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid var(--secondary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .group-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+        
+        .group-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .group-card h3 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .team-list {
+            list-style: none;
+            min-height: 280px;
+        }
+        
+        .team-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: grab;
+            transition: var(--transition);
+            border-left: 5px solid transparent;
+            position: relative;
+            user-select: none;
+            touch-action: none;
+        }
+        
+        .team-item:active {
+            cursor: grabbing;
+        }
+        
+        .team-item:hover {
+            background: #e9ecef;
+            transform: translateX(8px);
+        }
+        
+        .team-item.primeiro {
+            border-left-color: #00b894;
+            background: linear-gradient(90deg, #f0fff4, #ffffff);
+        }
+        
+        .team-item.segundo {
+            border-left-color: #0984e3;
+            background: linear-gradient(90deg, #f0f8ff, #ffffff);
+        }
+        
+        .team-item.terceiro {
+            border-left-color: #fdcb6e;
+            background: linear-gradient(90deg, #fffaf0, #ffffff);
+        }
+        
+        .team-item.quarto {
+            border-left-color: #636e72;
+            background: linear-gradient(90deg, #f8f9fa, #ffffff);
+        }
+        
+        .team-pos {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .team-flag {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        
+        .team-name {
+            flex-grow: 1;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .drag-info {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* CONTROLE DE FASES ACIMA DO CHAVEAMENTO */
+        .phase-control-above {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .phase-control-above.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .phase-control-above h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .phase-control-above p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .phase-control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-phase {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #1dd1a1);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(46, 213, 115, 0.3);
+        }
+        
+        .btn-phase:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(46, 213, 115, 0.4);
+        }
+        
+        .btn-back {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--warning), #ff7f00);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(255, 165, 2, 0.3);
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 165, 2, 0.4);
+        }
+        
+        /* SEÇÃO DO CHAVEAMENTO ESPELHADO - OTIMIZADO PARA MOBILE */
+        .bracket-section {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .bracket-section h2 {
+            color: var(--primary);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        
+        .bracket-container {
+            position: relative;
+            min-height: 600px;
+            overflow-x: auto;
+            padding: 20px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .bracket {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            min-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .round-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            flex: 1;
+            min-height: 700px;
+            padding: 0 15px;
+        }
+        
+        .round-column.left {
+            align-items: flex-start;
+        }
+        
+        .round-column.right {
+            align-items: flex-end;
+        }
+        
+        .round-column.center {
+            align-items: center;
+            flex: 0.5;
+        }
+        
+        .round-title {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--light), #ffffff);
+            padding: 12px 25px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            width: fit-content;
+            align-self: center;
+        }
+        
+        .match {
+            background: white;
+            border-radius: 10px;
+            padding: 0;
+            margin: 15px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+            transition: var(--transition);
+            width: 260px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .match:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .match::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+        
+        .team {
+            padding: 18px 20px;
+            margin: 0;
+            border-bottom: 1px solid #f1f2f6;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            position: relative;
+            touch-action: manipulation;
+        }
+        
+        .team:last-child {
+            border-bottom: none;
+        }
+        
+        .team:hover {
+            background: #f8f9fa;
+        }
+        
+        .team.winner {
+            background: linear-gradient(90deg, #e8f5e9, #ffffff);
+            font-weight: 700;
+            color: #00b894;
+        }
+        
+        .team.winner::after {
+            content: "✓";
+            color: #00b894;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        
+        .team .flag {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .team .name {
+            flex-grow: 1;
+            font-size: 1.1rem;
+        }
+        
+        .connector {
+            position: absolute;
+            width: 40px;
+            height: 2px;
+            background: #dfe6e9;
+            z-index: 1;
+        }
+        
+        .connector.vertical {
+            width: 2px;
+            height: 60px;
+        }
+        
+        .final-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .final-match {
+            width: 300px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.15);
+        }
+        
+        .final-match::before {
+            content: "🏆 FINAL";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent), #ff3838);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        .third-place {
+            width: 280px;
+            border: 2px solid #fdcb6e;
+        }
+        
+        .third-place::before {
+            content: "🥉 3º LUGAR";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        /* STATUS BAR */
+        .status-bar {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px 30px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .status-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        
+        .status-icon.active {
+            background: var(--success);
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.7);
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(46, 213, 115, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
+        }
+        
+        .status-icon.waiting {
+            background: #fdcb6e;
+        }
+        
+        .status-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        /* BOTÃO DE VOLTAR FASE FIXO */
+        .back-phase-fixed {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .back-phase-fixed.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* FOOTER */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* RESPONSIVIDADE PARA CELULAR */
+        @media (max-width: 1400px) {
+            .bracket {
+                min-width: 1200px;
+            }
+            
+            .match {
+                width: 220px;
+            }
+            
+            .final-match {
+                width: 260px;
+            }
+            
+            .third-place {
+                width: 240px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .bracket {
+                min-width: 1000px;
+            }
+            
+            .match {
+                width: 200px;
+            }
+            
+            .final-match {
+                width: 240px;
+            }
+            
+            .third-place {
+                width: 220px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+                padding: 12px 24px;
+            }
+            
+            .groups-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            
+            .group-card {
+                padding: 15px;
+            }
+            
+            .team-item {
+                padding: 12px;
+                gap: 10px;
+            }
+            
+            .team-flag {
+                font-size: 1.5rem;
+            }
+            
+            .team-name {
+                font-size: 1rem;
+            }
+            
+            .bracket {
+                min-width: 800px;
+            }
+            
+            .round-column {
+                min-height: 500px;
+                padding: 0 10px;
+            }
+            
+            .match {
+                width: 160px;
+            }
+            
+            .team {
+                padding: 12px 15px;
+            }
+            
+            .team .flag {
+                font-size: 1.2rem;
+                margin-right: 10px;
+            }
+            
+            .team .name {
+                font-size: 0.9rem;
+            }
+            
+            .final-match {
+                width: 200px;
+            }
+            
+            .third-place {
+                width: 180px;
+            }
+            
+            .round-title {
+                font-size: 1.2rem;
+                padding: 10px 20px;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .phase-control-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-phase, .btn-back {
+                width: 100%;
+                justify-content: center;
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+            
+            .back-phase-fixed {
+                position: static;
+                margin-top: 20px;
+                text-align: center;
+                width: 100%;
+            }
+            
+            .back-phase-fixed.active {
+                display: flex;
+                justify-content: center;
+            }
+            
+            .btn-warning {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .groups-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .bracket {
+                min-width: 700px;
+            }
+            
+            .match {
+                width: 140px;
+            }
+            
+            .team {
+                padding: 10px 12px;
+            }
+            
+            .team .name {
+                font-size: 0.8rem;
+            }
+            
+            .final-match {
+                width: 180px;
+            }
+            
+            .third-place {
+                width: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-futbol"></i> Simulador Interativo - Copa do Mundo 2026</h1>
+            <p class="subtitle">Defina as classificações dos grupos e controle cada fase do mata-mata</p>
+            
+            <div class="controls">
+                <button class="btn btn-primary" id="btn-montar-chaveamento">
+                    <i class="fas fa-sitemap"></i> Montar Chaveamento
+                </button>
+                <button class="btn btn-success" id="btn-reset-grupos">
+                    <i class="fas fa-redo"></i> Redefinir Grupos
+                </button>
+                <button class="btn btn-danger" id="btn-nova-simulacao">
+                    <i class="fas fa-fire"></i> Nova Simulação
+                </button>
+            </div>
+        </header>
+        
+        <!-- INSTRUÇÕES NO TOPO -->
+        <div class="instructions-top">
+            <h3><i class="fas fa-info-circle"></i> Como usar o simulador:</h3>
+            <ol>
+                <li><strong>Arraste os times</strong> em cada grupo para definir a classificação (1º a 4º lugar)</li>
+                <li>Clique em <strong>"Montar Chaveamento"</strong> para organizar os confrontos da fase final</li>
+                <li><strong>Clique nos times</strong> em cada confronto para definir os vencedores</li>
+                <li>Após definir todos os vencedores de uma fase, <strong>clique no botão que aparecerá</strong> para avançar para a próxima fase</li>
+                <li>Use o <strong>botão "Voltar Fase"</strong> para retornar a fases anteriores e fazer modificações</li>
+                <li>Continue até chegar à final e definir o campeão</li>
+            </ol>
+        </div>
+        
+        <section class="groups-section">
+            <h2><i class="fas fa-list-ol"></i> Fase de Grupos</h2>
+            <p class="drag-info"><i class="fas fa-arrows-alt"></i> Arraste os times para definir a classificação (1º a 4º lugar)</p>
+            
+            <div class="groups-container" id="grupos-container">
+                <!-- Grupos serão gerados aqui -->
+            </div>
+        </section>
+        
+        <!-- CONTROLE DE FASES (ACIMA DO CHAVEAMENTO) -->
+        <div class="phase-control-above" id="phase-control-above">
+            <!-- Conteúdo será inserido dinamicamente -->
+        </div>
+        
+        <section class="bracket-section" id="bracket-section">
+            <h2><i class="fas fa-trophy"></i> Chaveamento - Fase Final</h2>
+            
+            <div class="bracket-container">
+                <div class="bracket" id="chaveamento-container">
+                    <!-- Coluna das Oitavas (Esquerda) -->
+                    <div class="round-column left" id="round-left">
+                        <div class="round-title">Oitavas de Final - Esquerda</div>
+                        <!-- Jogos serão inseridos aqui via JS -->
+                    </div>
+                    
+                    <!-- Coluna das Quartas (Esquerda) -->
+                    <div class="round-column left" id="quarters-left">
+                        <div class="round-title">Quartas de Final - Esquerda</div>
+                        <!-- Jogos serão inseridos aqui via JS -->
+                    </div>
+                    
+                    <!-- Coluna das Semifinais (Esquerda) -->
+                    <div class="round-column left" id="semis-left">
+                        <div class="round-title">Semifinais - Esquerda</div>
+                        <!-- Jogos serão inseridos aqui via JS -->
+                    </div>
+                    
+                    <!-- Coluna Central (Final e 3º Lugar) -->
+                    <div class="round-column center" id="round-center">
+                        <div class="final-container">
+                            <div class="match final-match" id="final-match">
+                                <div class="team" data-team="final-1">
+                                    <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                                </div>
+                                <div class="team" data-team="final-2">
+                                    <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                                </div>
+                            </div>
+                            
+                            <div class="match third-place" id="third-place-match">
+                                <div class="team" data-team="third-1">
+                                    <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                                </div>
+                                <div class="team" data-team="third-2">
+                                    <span><span class="flag">🏴</span> <span class="name">A definir</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Coluna das Semifinais (Direita) -->
+                    <div class="round-column right" id="semis-right">
+                        <div class="round-title">Semifinais - Direita</div>
+                        <!-- Jogos serão inseridos aqui via JS -->
+                    </div>
+                    
+                    <!-- Coluna das Quartas (Direita) -->
+                    <div class="round-column right" id="quarters-right">
+                        <div class="round-title">Quartas de Final - Direita</div>
+                        <!-- Jogos serão inseridos aqui via JS -->
+                    </div>
+                    
+                    <!-- Coluna das Oitavas (Direita) -->
+                    <div class="round-column right" id="round-right">
+                        <div class="round-title">Oitavas de Final - Direita</div>
+                        <!-- Jogos serão inseridos aqui via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- BOTÃO FIXO PARA VOLTAR FASE -->
+        <div class="back-phase-fixed" id="back-phase-fixed">
+            <button class="btn btn-warning" id="btn-voltar-fase-fixo">
+                <i class="fas fa-undo"></i> Voltar Fase
+            </button>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status">
+                <div class="status-icon waiting" id="status-grupos"></div>
+                <span class="status-text">Fase de Grupos: <strong id="status-text-grupos">Aguardando definição</strong></span>
+            </div>
+            <div class="status">
+                <div class="status-icon waiting" id="status-mata"></div>
+                <span class="status-text">Fase Mata-Mata: <strong id="status-text-mata">Não iniciada</strong></span>
+            </div>
+            <div class="status">
+                <div class="status-icon waiting" id="status-fase"></div>
+                <span class="status-text">Fase Atual: <strong id="status-text-fase">-</strong></span>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Simulador da Copa do Mundo 2026 | Dados baseados no sorteio oficial de 5 de dezembro de 2025</p>
+            <p>As 6 vagas de repescagem são representadas pelas equipes indicadas como "Playoff"</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dados dos grupos (conforme sorteio de 5/dez/2025)
+        const gruposData = [
+            { letra: 'A', times: ['México', 'África do Sul', 'Coreia do Sul', 'República Tcheca'] },
+            { letra: 'B', times: ['Canadá', 'Itália', 'Catar', 'Suíça'] },
+            { letra: 'C', times: ['Brasil', 'Marrocos', 'Haiti', 'Escócia'] },
+            { letra: 'D', times: ['Estados Unidos', 'Paraguai', 'Austrália', 'Turquia'] },
+            { letra: 'E', times: ['Alemanha', 'Curaçao', 'Costa do Marfim', 'Equador'] },
+            { letra: 'F', times: ['Holanda', 'Japão', 'Ucrânia', 'Tunísia'] },
+            { letra: 'G', times: ['Bélgica', 'Egito', 'Irã', 'Nova Zelândia'] },
+            { letra: 'H', times: ['Espanha', 'Cabo Verde', 'Arábia Saudita', 'Uruguai'] },
+            { letra: 'I', times: ['França', 'Senegal', 'Bolívia', 'Noruega'] },
+            { letra: 'J', times: ['Argentina', 'Argélia', 'Áustria', 'Jordânia'] },
+            { letra: 'K', times: ['Portugal', 'RD Congo', 'Uzbequistão', 'Colômbia'] },
+            { letra: 'L', times: ['Inglaterra', 'Croácia', 'Gana', 'Panamá'] }
+        ];
+
+        // Bandeiras para os times
+        const flags = {
+            'Brasil': '🇧🇷', 'Argentina': '🇦🇷', 'França': '🇫🇷', 'Alemanha': '🇩🇪',
+            'Espanha': '🇪🇸', 'Inglaterra': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Portugal': '🇵🇹', 'Bélgica': '🇧🇪',
+            'Holanda': '🇳🇱', 'Itália': '🇮🇹', 'Croácia': '🇭🇷', 'Uruguai': '🇺🇾',
+            'México': '🇲🇽', 'Estados Unidos': '🇺🇸', 'Canadá': '🇨🇦', 'Japão': '🇯🇵',
+            'Coreia do Sul': '🇰🇷', 'Austrália': '🇦🇺', 'Marrocos': '🇲🇦', 'Senegal': '🇸🇳',
+            'Egito': '🇪🇬', 'Gana': '🇬🇭', 'Catar': '🇶🇦', 'Arábia Saudita': '🇸🇦',
+            'Irã': '🇮🇷', 'Colômbia': '🇨🇴', 'Paraguai': '🇵🇾', 'Chile': '🇨🇱',
+            'Equador': '🇪🇨', 'Peru': '🇵🇪', 'Suíça': '🇨🇭', 'Suécia': '🇸🇪',
+            'Polônia': '🇵🇱', 'Áustria': '🇦🇹', 'Ucrânia': '🇺🇦', 'Turquia': '🇹🇷',
+            'República Tcheca': '🇨🇿', 'Escócia': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'Noruega': '🇳🇴', 'Costa do Marfim': '🇨🇮',
+            'Tunísia': '🇹🇳', 'Argélia': '🇩🇿', 'Nigéria': '🇳🇬', 'Cabo Verde': '🇨🇻',
+            'Haiti': '🇭🇹', 'Panamá': '🇵🇦', 'Bolívia': '🇧🇴', 'RD Congo': '🇨🇩',
+            'Nova Zelândia': '🇳🇿', 'Jordânia': '🇯🇴', 'Uzbequistão': '🇺🇿', 'Curaçao': '🇨🇼'
+        };
+
+        // Estado da simulação
+        let grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
+        let classificados = { primeiros: [], segundos: [], terceiros: [] };
+        let chaveamento = { 
+            oitavasEsquerda: [], oitavasDireita: [], 
+            quartasEsquerda: [], quartasDireita: [],
+            semisEsquerda: [], semisDireita: [],
+            final: [], terceiro: []
+        };
+        
+        let faseAtual = 'oitavas'; // oitavas, quartas, semifinal, final
+        let todasFasesCompletas = false;
+        let historicoFases = []; // Para armazenar o histórico das fases
+        let itemArrastando = null;
+
+        // Inicializa a página
+        document.addEventListener('DOMContentLoaded', function() {
+            renderizarGrupos();
+            configurarEventos();
+            atualizarStatus();
+        });
+
+        // Renderiza os grupos com capacidade de arrastar
+        function renderizarGrupos() {
+            const container = document.getElementById('grupos-container');
+            container.innerHTML = '';
+            
+            grupoOrdenado.forEach(grupo => {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'group-card';
+                groupCard.innerHTML = `
+                    <h3>Grupo ${grupo.letra}</h3>
+                    <ul class="team-list" data-grupo="${grupo.letra}">
+                        ${grupo.times.map((time, index) => `
+                            <li class="team-item ${index === 0 ? 'primeiro' : index === 1 ? 'segundo' : index === 2 ? 'terceiro' : 'quarto'}" 
+                                data-time="${time}" draggable="true">
+                                <div class="team-pos">${index + 1}</div>
+                                <div class="team-flag">${flags[time] || '🏴'}</div>
+                                <div class="team-name">${time}</div>
+                                <i class="fas fa-arrows-alt-v" style="color: #aaa;"></i>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+                
+                container.appendChild(groupCard);
+            });
+            
+            // Configurar funcionalidade de arrastar e soltar
+            configurarDragAndDrop();
+        }
+
+        // Configura a funcionalidade de arrastar e soltar - CORRIGIDA
+        function configurarDragAndDrop() {
+            const lists = document.querySelectorAll('.team-list');
+            
+            lists.forEach(list => {
+                // Eventos para arrastar - CORRIGIDO
+                list.addEventListener('dragstart', (e) => {
+                    if (e.target.classList.contains('team-item')) {
+                        itemArrastando = e.target;
+                        e.target.style.opacity = '0.5';
+                        setTimeout(() => {
+                            e.target.style.opacity = '';
+                        }, 0);
+                    }
+                });
+                
+                list.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, e.clientY);
+                    const draggable = document.querySelector('.team-item.dragging');
+                    
+                    if (draggable) {
+                        if (afterElement == null) {
+                            list.appendChild(draggable);
+                        } else {
+                            list.insertBefore(draggable, afterElement);
+                        }
+                    }
+                });
+                
+                list.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    if (e.target.classList.contains('team-item') && e.target !== itemArrastando) {
+                        e.target.style.border = '2px dashed #3498db';
+                    }
+                });
+                
+                list.addEventListener('dragleave', (e) => {
+                    if (e.target.classList.contains('team-item')) {
+                        e.target.style.border = '';
+                    }
+                });
+                
+                list.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (itemArrastando && e.target.classList.contains('team-list')) {
+                        const afterElement = getDragAfterElement(list, e.clientY);
+                        if (afterElement == null) {
+                            list.appendChild(itemArrastando);
+                        } else {
+                            list.insertBefore(itemArrastando, afterElement);
+                        }
+                        atualizarOrdemGrupo(list.dataset.grupo);
+                        atualizarStatus();
+                    }
+                    // Remover bordas
+                    list.querySelectorAll('.team-item').forEach(item => {
+                        item.style.border = '';
+                    });
+                });
+                
+                list.addEventListener('dragend', (e) => {
+                    itemArrastando = null;
+                    // Remover classe dragging de todos
+                    document.querySelectorAll('.team-item').forEach(item => {
+                        item.classList.remove('dragging');
+                        item.style.border = '';
+                        item.style.opacity = '';
+                    });
+                });
+            });
+            
+            // Adicionar eventos aos itens
+            document.querySelectorAll('.team-item').forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    item.classList.add('dragging');
+                });
+            });
+        }
+
+        // Função auxiliar para determinar onde soltar o elemento - CORRIGIDA
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.team-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Atualiza a ordem dos times no grupo após arrastar
+        function atualizarOrdemGrupo(grupoLetra) {
+            const grupoIndex = grupoOrdenado.findIndex(g => g.letra === grupoLetra);
+            const list = document.querySelector(`[data-grupo="${grupoLetra}"]`);
+            const times = Array.from(list.children).map(item => item.dataset.time);
+            
+            grupoOrdenado[grupoIndex].times = times;
+            
+            // Atualizar classes de posição
+            Array.from(list.children).forEach((item, index) => {
+                item.className = 'team-item';
+                if (index === 0) item.classList.add('primeiro');
+                else if (index === 1) item.classList.add('segundo');
+                else if (index === 2) item.classList.add('terceiro');
+                else item.classList.add('quarto');
+                
+                // Atualizar número da posição
+                item.querySelector('.team-pos').textContent = index + 1;
+            });
+        }
+
+        // Calcula os classificados com base na ordem atual dos grupos
+        function calcularClassificados() {
+            classificados = { primeiros: [], segundos: [], terceiros: [] };
+            const todosTerceiros = [];
+            
+            grupoOrdenado.forEach(grupo => {
+                // Adiciona primeiro e segundo colocados
+                classificados.primeiros.push({ grupo: grupo.letra, time: grupo.times[0] });
+                classificados.segundos.push({ grupo: grupo.letra, time: grupo.times[1] });
+                
+                // Adiciona terceiro para possível classificação
+                todosTerceiros.push({
+                    grupo: grupo.letra,
+                    time: grupo.times[2],
+                    pts: Math.floor(Math.random() * 6) + 1,
+                    sg: Math.floor(Math.random() * 5) - 2,
+                    gp: Math.floor(Math.random() * 6) + 1
+                });
+            });
+            
+            // Ordena terceiros e pega os 8 melhores
+            todosTerceiros.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
+            classificados.terceiros = todosTerceiros.slice(0, 8);
+            
+            return classificados;
+        }
+
+        // Salva o estado atual da fase no histórico
+        function salvarEstadoFase() {
+            historicoFases.push({
+                fase: faseAtual,
+                chaveamento: JSON.parse(JSON.stringify(chaveamento))
+            });
+            
+            // Mantém apenas os últimos 10 estados no histórico
+            if (historicoFases.length > 10) {
+                historicoFases.shift();
+            }
+        }
+
+        // Monta o chaveamento inicial (apenas organiza os confrontos)
+        function montarChaveamento() {
+            // Primeiro calcula os classificados
+            calcularClassificados();
+            
+            // Limpa chaveamentos anteriores
+            chaveamento = { 
+                oitavasEsquerda: [], oitavasDireita: [], 
+                quartasEsquerda: [], quartasDireita: [],
+                semisEsquerda: [], semisDireita: [],
+                final: [], terceiro: []
+            };
+            
+            // Limpa o histórico
+            historicoFases = [];
+            
+            // Define os confrontos da rodada de 32 conforme formato oficial
+            const confrontosR32 = [
+                // LADO ESQUERDO (8 confrontos)
+                { m: 1, a: classificados.segundos.find(s => s.grupo === 'A').time, b: classificados.segundos.find(s => s.grupo === 'B').time },
+                { m: 2, a: classificados.primeiros.find(p => p.grupo === 'E').time, b: classificados.terceiros[0].time },
+                { m: 3, a: classificados.primeiros.find(p => p.grupo === 'F').time, b: classificados.segundos.find(s => s.grupo === 'C').time },
+                { m: 4, a: classificados.primeiros.find(p => p.grupo === 'C').time, b: classificados.segundos.find(s => s.grupo === 'F').time },
+                { m: 5, a: classificados.primeiros.find(p => p.grupo === 'I').time, b: classificados.terceiros[1].time },
+                { m: 6, a: classificados.segundos.find(s => s.grupo === 'E').time, b: classificados.segundos.find(s => s.grupo === 'I').time },
+                { m: 7, a: classificados.primeiros.find(p => p.grupo === 'A').time, b: classificados.terceiros[2].time },
+                { m: 8, a: classificados.primeiros.find(p => p.grupo === 'L').time, b: classificados.terceiros[3].time },
+                
+                // LADO DIREITO (8 confrontos)
+                { m: 9, a: classificados.primeiros.find(p => p.grupo === 'D').time, b: classificados.terceiros[4].time },
+                { m: 10, a: classificados.primeiros.find(p => p.grupo === 'G').time, b: classificados.terceiros[5].time },
+                { m: 11, a: classificados.segundos.find(s => s.grupo === 'K').time, b: classificados.segundos.find(s => s.grupo === 'L').time },
+                { m: 12, a: classificados.primeiros.find(p => p.grupo === 'H').time, b: classificados.segundos.find(s => s.grupo === 'J').time },
+                { m: 13, a: classificados.primeiros.find(p => p.grupo === 'B').time, b: classificados.terceiros[6].time },
+                { m: 14, a: classificados.primeiros.find(p => p.grupo === 'J').time, b: classificados.segundos.find(s => s.grupo === 'H').time },
+                { m: 15, a: classificados.primeiros.find(p => p.grupo === 'K').time, b: classificados.terceiros[7].time },
+                { m: 16, a: classificados.segundos.find(s => s.grupo === 'D').time, b: classificados.segundos.find(s => s.grupo === 'G').time }
+            ];
+            
+            // Divide em lado esquerdo (1-8) e direito (9-16)
+            chaveamento.oitavasEsquerda = confrontosR32.slice(0, 8).map(conf => ({
+                ...conf,
+                vencedor: null // Sem vencedor inicial
+            }));
+            
+            chaveamento.oitavasDireita = confrontosR32.slice(8, 16).map(conf => ({
+                ...conf,
+                vencedor: null // Sem vencedor inicial
+            }));
+            
+            // Salva o estado inicial no histórico
+            salvarEstadoFase();
+            
+            // Mostra a seção do chaveamento
+            document.getElementById('bracket-section').style.display = 'block';
+            
+            // Renderiza o chaveamento
+            renderizarChaveamento();
+            
+            // Atualiza status e fase
+            faseAtual = 'oitavas';
+            todasFasesCompletas = false;
+            atualizarStatus();
+            verificarFaseCompleta();
+            
+            // Atualiza visibilidade do botão de voltar fase
+            atualizarBotaoVoltarFase();
+            
+            // Scroll para o chaveamento
+            document.getElementById('bracket-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Renderiza o chaveamento do mata-mata
+        function renderizarChaveamento() {
+            // Limpa os confrontos existentes
+            ['round-left', 'round-right', 'quarters-left', 'quarters-right', 'semis-left', 'semis-right'].forEach(id => {
+                const container = document.getElementById(id);
+                // Remove todos os elementos exceto o título
+                const title = container.querySelector('.round-title');
+                container.innerHTML = '';
+                if (title) container.appendChild(title);
+            });
+            
+            // Renderiza Oitavas - Lado Esquerdo
+            const roundLeft = document.getElementById('round-left');
+            chaveamento.oitavasEsquerda.forEach((conf, idx) => {
+                const match = criarElementoConfronto('oitavasEsquerda', idx, conf);
+                roundLeft.appendChild(match);
+            });
+            
+            // Renderiza Oitavas - Lado Direito
+            const roundRight = document.getElementById('round-right');
+            chaveamento.oitavasDireita.forEach((conf, idx) => {
+                const match = criarElementoConfronto('oitavasDireita', idx, conf);
+                roundRight.appendChild(match);
+            });
+            
+            // Renderiza Quartas - Lado Esquerdo (se existirem)
+            const quartersLeft = document.getElementById('quarters-left');
+            chaveamento.quartasEsquerda.forEach((conf, idx) => {
+                const match = criarElementoConfronto('quartasEsquerda', idx, conf);
+                quartersLeft.appendChild(match);
+            });
+            
+            // Renderiza Quartas - Lado Direito (se existirem)
+            const quartersRight = document.getElementById('quarters-right');
+            chaveamento.quartasDireita.forEach((conf, idx) => {
+                const match = criarElementoConfronto('quartasDireita', idx, conf);
+                quartersRight.appendChild(match);
+            });
+            
+            // Renderiza Semifinais - Lado Esquerdo (se existirem)
+            const semisLeft = document.getElementById('semis-left');
+            chaveamento.semisEsquerda.forEach((conf, idx) => {
+                const match = criarElementoConfronto('semisEsquerda', idx, conf);
+                semisLeft.appendChild(match);
+            });
+            
+            // Renderiza Semifinais - Lado Direito (se existirem)
+            const semisRight = document.getElementById('semis-right');
+            chaveamento.semisDireita.forEach((conf, idx) => {
+                const match = criarElementoConfronto('semisDireita', idx, conf);
+                semisRight.appendChild(match);
+            });
+            
+            // Renderiza Final (se existir)
+            const finalMatch = document.getElementById('final-match');
+            if (chaveamento.final.length > 0) {
+                const conf = chaveamento.final[0];
+                finalMatch.innerHTML = `
+                    <div class="team ${conf.vencedor === conf.a ? 'winner' : ''}" data-match="final-0" data-team="a">
+                        <span><span class="flag">${flags[conf.a] || '🏴'}</span> <span class="name">${conf.a}</span></span>
+                    </div>
+                    <div class="team ${conf.vencedor === conf.b ? 'winner' : ''}" data-match="final-0" data-team="b">
+                        <span><span class="flag">${flags[conf.b] || '🏴'}</span> <span class="name">${conf.b}</span></span>
+                    </div>
+                `;
+            }
+            
+            // Renderiza 3º Lugar (se existir)
+            const thirdPlaceMatch = document.getElementById('third-place-match');
+            if (chaveamento.terceiro.length > 0) {
+                const conf = chaveamento.terceiro[0];
+                thirdPlaceMatch.innerHTML = `
+                    <div class="team ${conf.vencedor === conf.a ? 'winner' : ''}" data-match="terceiro-0" data-team="a">
+                        <span><span class="flag">${flags[conf.a] || '🏴'}</span> <span class="name">${conf.a}</span></span>
+                    </div>
+                    <div class="team ${conf.vencedor === conf.b ? 'winner' : ''}" data-match="terceiro-0" data-team="b">
+                        <span><span class="flag">${flags[conf.b] || '🏴'}</span> <span class="name">${conf.b}</span></span>
+                    </div>
+                `;
+            }
+            
+            // Configurar eventos de clique nos times
+            configurarEventosChaveamento();
+        }
+
+        // Cria um elemento de confronto (match)
+        function criarElementoConfronto(fase, idx, conf) {
+            const match = document.createElement('div');
+            match.className = 'match';
+            match.innerHTML = `
+                <div class="team ${conf.vencedor === conf.a ? 'winner' : ''}" data-match="${fase}-${idx}" data-team="a">
+                    <span><span class="flag">${flags[conf.a] || '🏴'}</span> <span class="name">${conf.a}</span></span>
+                </div>
+                <div class="team ${conf.vencedor === conf.b ? 'winner' : ''}" data-match="${fase}-${idx}" data-team="b">
+                    <span><span class="flag">${flags[conf.b] || '🏴'}</span> <span class="name">${conf.b}</span></span>
+                </div>
+            `;
+            return match;
+        }
+
+        // Configura eventos para o chaveamento
+        function configurarEventosChaveamento() {
+            document.querySelectorAll('.team').forEach(team => {
+                team.addEventListener('click', function() {
+                    if (todasFasesCompletas) return;
+                    
+                    const matchData = this.dataset.match;
+                    const teamSide = this.dataset.team;
+                    
+                    if (!matchData) return;
+                    
+                    const [fase, index] = matchData.split('-');
+                    const matchIdx = parseInt(index);
+                    
+                    // Salva o estado atual antes de fazer mudanças
+                    salvarEstadoFase();
+                    
+                    // Encontra o confronto correspondente
+                    let confronto;
+                    switch(fase) {
+                        case 'oitavasEsquerda': confronto = chaveamento.oitavasEsquerda[matchIdx]; break;
+                        case 'oitavasDireita': confronto = chaveamento.oitavasDireita[matchIdx]; break;
+                        case 'quartasEsquerda': confronto = chaveamento.quartasEsquerda[matchIdx]; break;
+                        case 'quartasDireita': confronto = chaveamento.quartasDireita[matchIdx]; break;
+                        case 'semisEsquerda': confronto = chaveamento.semisEsquerda[matchIdx]; break;
+                        case 'semisDireita': confronto = chaveamento.semisDireita[matchIdx]; break;
+                        case 'final': confronto = chaveamento.final[matchIdx]; break;
+                        case 'terceiro': confronto = chaveamento.terceiro[matchIdx]; break;
+                    }
+                    
+                    if (confronto) {
+                        // Define o vencedor
+                        confronto.vencedor = teamSide === 'a' ? confronto.a : confronto.b;
+                        
+                        // Se estiver em uma fase anterior e mudar um vencedor, limpa fases posteriores
+                        if (fase.includes('oitavas')) {
+                            // Se mudou uma oitava, limpa quartas, semifinais e final
+                            chaveamento.quartasEsquerda = [];
+                            chaveamento.quartasDireita = [];
+                            chaveamento.semisEsquerda = [];
+                            chaveamento.semisDireita = [];
+                            chaveamento.final = [];
+                            chaveamento.terceiro = [];
+                            faseAtual = 'oitavas';
+                        } else if (fase.includes('quartas')) {
+                            // Se mudou uma quarta, limpa semifinais e final
+                            chaveamento.semisEsquerda = [];
+                            chaveamento.semisDireita = [];
+                            chaveamento.final = [];
+                            chaveamento.terceiro = [];
+                            faseAtual = 'quartas';
+                        } else if (fase.includes('semis')) {
+                            // Se mudou uma semi, limpa final
+                            chaveamento.final = [];
+                            chaveamento.terceiro = [];
+                            faseAtual = 'semifinal';
+                        }
+                        
+                        // Re-renderiza o chaveamento
+                        renderizarChaveamento();
+                        atualizarStatus();
+                        verificarFaseCompleta();
+                        
+                        // Atualiza visibilidade do botão de voltar fase
+                        atualizarBotaoVoltarFase();
+                    }
+                });
+            });
+        }
+
+        // Atualiza a visibilidade do botão de voltar fase - CORRIGIDO
+        function atualizarBotaoVoltarFase() {
+            const backButton = document.getElementById('back-phase-fixed');
+            
+            // Mostra o botão se não estiver na fase inicial (oitavas) e se houver histórico
+            if (faseAtual !== 'oitavas' && historicoFases.length > 0) {
+                backButton.classList.add('active');
+            } else {
+                backButton.classList.remove('active');
+            }
+        }
+
+        // Volta para a fase anterior - CORRIGIDO
+        function voltarFaseAnterior() {
+            if (historicoFases.length === 0) return;
+            
+            // Pega o último estado salvo
+            const estadoAnterior = historicoFases[historicoFases.length - 1];
+            
+            // Restaura o estado anterior
+            chaveamento = JSON.parse(JSON.stringify(estadoAnterior.chaveamento));
+            faseAtual = estadoAnterior.fase;
+            
+            // Remove o estado restaurado do histórico
+            historicoFases.pop();
+            
+            // Renderiza o chaveamento restaurado
+            renderizarChaveamento();
+            atualizarStatus();
+            verificarFaseCompleta();
+            atualizarBotaoVoltarFase();
+        }
+
+        // Verifica se todos os confrontos de uma fase estão completos - CORRIGIDO
+        function verificarFaseCompleta() {
+            const control = document.getElementById('phase-control-above');
+            
+            // Verifica qual fase está ativa e se está completa
+            let faseCompleta = false;
+            let proximaFase = '';
+            let textoFase = '';
+            
+            switch(faseAtual) {
+                case 'oitavas':
+                    faseCompleta = chaveamento.oitavasEsquerda.every(c => c.vencedor) && 
+                                   chaveamento.oitavasDireita.every(c => c.vencedor);
+                    proximaFase = 'quartas';
+                    textoFase = 'Oitavas de Final';
+                    break;
+                    
+                case 'quartas':
+                    faseCompleta = chaveamento.quartasEsquerda.every(c => c.vencedor) && 
+                                   chaveamento.quartasDireita.every(c => c.vencedor);
+                    proximaFase = 'semifinal';
+                    textoFase = 'Quartas de Final';
+                    break;
+                    
+                case 'semifinal':
+                    faseCompleta = chaveamento.semisEsquerda.every(c => c.vencedor) && 
+                                   chaveamento.semisDireita.every(c => c.vencedor);
+                    proximaFase = 'final';
+                    textoFase = 'Semifinais';
+                    break;
+                    
+                case 'final':
+                    faseCompleta = chaveamento.final.length > 0 && chaveamento.final[0].vencedor;
+                    proximaFase = 'completo';
+                    textoFase = 'Final';
+                    break;
+            }
+            
+            // Mostra ou esconde o controle de fase
+            if (faseCompleta && proximaFase !== 'completo') {
+                control.innerHTML = `
+                    <h3>${textoFase} Concluída!</h3>
+                    <p>Todos os confrontos da ${textoFase.toLowerCase()} foram definidos.</p>
+                    <div class="phase-control-buttons">
+                        <button class="btn-phase" id="btn-avancar-fase">
+                            <i class="fas fa-arrow-right"></i> Avançar para ${proximaFase === 'quartas' ? 'Quartas de Final' : proximaFase === 'semifinal' ? 'Semifinais' : 'Final'}
+                        </button>
+                        ${faseAtual !== 'oitavas' ? `<button class="btn-back" id="btn-voltar-fase">
+                            <i class="fas fa-undo"></i> Voltar para ${faseAtual === 'quartas' ? 'Oitavas' : faseAtual === 'semifinal' ? 'Quartas' : 'Semifinais'}
+                        </button>` : ''}
+                    </div>
+                `;
+                control.classList.add('active');
+                
+                // Configura evento do botão avançar
+                document.getElementById('btn-avancar-fase').addEventListener('click', function() {
+                    salvarEstadoFase(); // Salva antes de avançar
+                    avancarParaProximaFase(proximaFase);
+                });
+                
+                // Configura evento do botão voltar (se existir)
+                const btnVoltar = document.getElementById('btn-voltar-fase');
+                if (btnVoltar) {
+                    btnVoltar.addEventListener('click', voltarFaseAnterior);
+                }
+            } else if (proximaFase === 'completo' && faseCompleta) {
+                control.innerHTML = `
+                    <h3>🏆 Copa do Mundo 2026 Concluída!</h3>
+                    <p>O campeão é <strong>${chaveamento.final[0].vencedor}</strong>!</p>
+                    <div class="phase-control-buttons">
+                        <button class="btn-phase" id="btn-nova-simulacao2">
+                            <i class="fas fa-redo"></i> Iniciar Nova Simulação
+                        </button>
+                        <button class="btn-back" id="btn-voltar-final">
+                            <i class="fas fa-undo"></i> Voltar para Semifinais
+                        </button>
+                    </div>
+                `;
+                control.classList.add('active');
+                todasFasesCompletas = true;
+                
+                // Configura eventos dos botões
+                document.getElementById('btn-nova-simulacao2').addEventListener('click', function() {
+                    novaSimulacao();
+                });
+                
+                document.getElementById('btn-voltar-final').addEventListener('click', voltarFaseAnterior);
+            } else {
+                control.classList.remove('active');
+            }
+            
+            // Atualiza também o botão fixo de voltar fase
+            atualizarBotaoVoltarFase();
+        }
+
+        // Avança para a próxima fase do chaveamento
+        function avancarParaProximaFase(proximaFase) {
+            switch(faseAtual) {
+                case 'oitavas':
+                    // Cria confrontos das quartas a partir das oitavas
+                    chaveamento.quartasEsquerda = [
+                        { a: chaveamento.oitavasEsquerda[0].vencedor, b: chaveamento.oitavasEsquerda[1].vencedor, vencedor: null },
+                        { a: chaveamento.oitavasEsquerda[2].vencedor, b: chaveamento.oitavasEsquerda[3].vencedor, vencedor: null },
+                        { a: chaveamento.oitavasEsquerda[4].vencedor, b: chaveamento.oitavasEsquerda[5].vencedor, vencedor: null },
+                        { a: chaveamento.oitavasEsquerda[6].vencedor, b: chaveamento.oitavasEsquerda[7].vencedor, vencedor: null }
+                    ];
+                    
+                    chaveamento.quartasDireita = [
+                        { a: chaveamento.oitavasDireita[0].vencedor, b: chaveamento.oitavasDireita[1].vencedor, vencedor: null },
+                        { a: chaveamento.oitavasDireita[2].vencedor, b: chaveamento.oitavasDireita[3].vencedor, vencedor: null },
+                        { a: chaveamento.oitavasDireita[4].vencedor, b: chaveamento.oitavasDireita[5].vencedor, vencedor: null },
+                        { a: chaveamento.oitavasDireita[6].vencedor, b: chaveamento.oitavasDireita[7].vencedor, vencedor: null }
+                    ];
+                    faseAtual = 'quartas';
+                    break;
+                    
+                case 'quartas':
+                    // Cria confrontos das semifinais a partir das quartas
+                    chaveamento.semisEsquerda = [
+                        { a: chaveamento.quartasEsquerda[0].vencedor, b: chaveamento.quartasEsquerda[1].vencedor, vencedor: null },
+                        { a: chaveamento.quartasEsquerda[2].vencedor, b: chaveamento.quartasEsquerda[3].vencedor, vencedor: null }
+                    ];
+                    
+                    chaveamento.semisDireita = [
+                        { a: chaveamento.quartasDireita[0].vencedor, b: chaveamento.quartasDireita[1].vencedor, vencedor: null },
+                        { a: chaveamento.quartasDireita[2].vencedor, b: chaveamento.quartasDireita[3].vencedor, vencedor: null }
+                    ];
+                    faseAtual = 'semifinal';
+                    break;
+                    
+                case 'semifinal':
+                    // Cria confrontos da final e 3º lugar
+                    chaveamento.final = [
+                        { a: chaveamento.semisEsquerda[0].vencedor, b: chaveamento.semisDireita[0].vencedor, vencedor: null }
+                    ];
+                    
+                    chaveamento.terceiro = [
+                        { a: chaveamento.semisEsquerda[1].vencedor, b: chaveamento.semisDireita[1].vencedor, vencedor: null }
+                    ];
+                    faseAtual = 'final';
+                    break;
+            }
+            
+            // Atualiza o chaveamento e status
+            renderizarChaveamento();
+            atualizarStatus();
+            verificarFaseCompleta();
+            atualizarBotaoVoltarFase();
+            
+            // Esconde o controle de fase
+            document.getElementById('phase-control-above').classList.remove('active');
+        }
+
+        // Atualiza a barra de status
+        function atualizarStatus() {
+            const statusGrupos = document.getElementById('status-grupos');
+            const statusTextGrupos = document.getElementById('status-text-grupos');
+            const statusMata = document.getElementById('status-mata');
+            const statusTextMata = document.getElementById('status-text-mata');
+            const statusFase = document.getElementById('status-fase');
+            const statusTextFase = document.getElementById('status-text-fase');
+            
+            // Status da fase de grupos
+            statusGrupos.className = 'status-icon active';
+            statusTextGrupos.textContent = 'Definida pelo usuário';
+            
+            // Status do mata-mata
+            if (chaveamento.oitavasEsquerda.length > 0) {
+                statusMata.className = 'status-icon active';
+                
+                let faseTexto = '';
+                switch(faseAtual) {
+                    case 'oitavas': faseTexto = 'Oitavas de Final'; break;
+                    case 'quartas': faseTexto = 'Quartas de Final'; break;
+                    case 'semifinal': faseTexto = 'Semifinais'; break;
+                    case 'final': faseTexto = 'Final'; break;
+                }
+                
+                statusTextMata.textContent = `Em andamento (${faseTexto})`;
+                statusTextFase.textContent = faseTexto;
+                statusFase.className = 'status-icon active';
+            } else {
+                statusMata.className = 'status-icon waiting';
+                statusTextMata.textContent = 'Aguardando montagem';
+                statusTextFase.textContent = '-';
+                statusFase.className = 'status-icon waiting';
+            }
+        }
+
+        // Inicia uma nova simulação
+        function novaSimulacao() {
+            grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
+            chaveamento = { 
+                oitavasEsquerda: [], oitavasDireita: [], 
+                quartasEsquerda: [], quartasDireita: [],
+                semisEsquerda: [], semisDireita: [],
+                final: [], terceiro: []
+            };
+            faseAtual = 'oitavas';
+            todasFasesCompletas = false;
+            historicoFases = [];
+            
+            renderizarGrupos();
+            renderizarChaveamento();
+            atualizarStatus();
+            
+            // Esconde a seção do chaveamento
+            document.getElementById('bracket-section').style.display = 'none';
+            document.getElementById('phase-control-above').classList.remove('active');
+            document.getElementById('back-phase-fixed').classList.remove('active');
+            
+            // Restaura texto do botão
+            document.getElementById('btn-montar-chaveamento').innerHTML = '<i class="fas fa-sitemap"></i> Montar Chaveamento';
+        }
+
+        // Configura os eventos dos botões
+        function configurarEventos() {
+            // Botão para montar chaveamento
+            document.getElementById('btn-montar-chaveamento').addEventListener('click', montarChaveamento);
+            
+            // Botão para redefinir grupos (voltar à ordem original)
+            document.getElementById('btn-reset-grupos').addEventListener('click', function() {
+                grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
+                renderizarGrupos();
+                atualizarStatus();
+            });
+            
+            // Botão para nova simulação completa
+            document.getElementById('btn-nova-simulacao').addEventListener('click', novaSimulacao);
+            
+            // Botão fixo para voltar fase
+            document.getElementById('btn-voltar-fase-fixo').addEventListener('click', voltarFaseAnterior);
+        }
+    </script>
+</body>
+</html>
