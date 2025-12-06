@@ -324,7 +324,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
-        /* MODAL DE SELEÇÃO DOS TERCEIROS */
+        /* MODAL DE SELEÇÃO DOS TERCEIROS (REMODELADO) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -348,7 +348,7 @@
             background: white;
             border-radius: var(--radius);
             padding: 30px;
-            max-width: 800px;
+            max-width: 1200px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -368,96 +368,166 @@
             color: #666;
             margin-bottom: 30px;
             font-size: 1.1rem;
+            line-height: 1.5;
         }
         
         .selection-instruction {
             background: #f0f8ff;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
             margin-bottom: 25px;
-            text-align: center;
-            border-left: 4px solid var(--secondary);
+            border-left: 5px solid var(--secondary);
+        }
+        
+        .selection-instruction h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .selection-instruction p {
+            margin-bottom: 8px;
+            line-height: 1.5;
         }
         
         .selection-instruction i {
             color: var(--secondary);
-            margin-right: 10px;
         }
         
-        .terceiros-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
+        .selection-instruction .important {
+            background: #ffeaa7;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #fdcb6e;
+        }
+        
+        .selection-area {
+            display: flex;
+            gap: 30px;
             margin-bottom: 30px;
         }
         
-        .terceiro-item {
+        .available-teams, .selected-teams {
+            flex: 1;
+        }
+        
+        .selection-area h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-size: 1.3rem;
+        }
+        
+        .terceiros-container, .melhores-container {
             background: #f8f9fa;
             border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+            border: 2px dashed #ddd;
+        }
+        
+        .melhores-container {
+            background: #e8f5e9;
+            border-color: var(--success);
+        }
+        
+        .terceiro-item {
+            background: white;
+            border-radius: 8px;
             padding: 15px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 15px;
-            cursor: pointer;
+            cursor: grab;
             transition: var(--transition);
             border: 2px solid transparent;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
         }
         
         .terceiro-item:hover {
-            background: #e9ecef;
             transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .terceiro-item.selected {
-            background: #e8f5e9;
-            border-color: var(--success);
-            box-shadow: 0 5px 15px rgba(46, 213, 115, 0.2);
+        .terceiro-item:active {
+            cursor: grabbing;
         }
         
-        .terceiro-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #ccc;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: var(--transition);
+        .terceiro-item .team-flag {
+            font-size: 1.5rem;
         }
         
-        .terceiro-item.selected .terceiro-checkbox {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
-        }
-        
-        .terceiro-item.selected .terceiro-checkbox::after {
-            content: "✓";
-            font-weight: bold;
-        }
-        
-        .terceiro-info {
-            flex-grow: 1;
+        .terceiro-item .team-name {
+            font-weight: 600;
+            font-size: 1.1rem;
         }
         
         .terceiro-group {
             font-size: 0.9rem;
             color: #666;
-            margin-top: 5px;
+            margin-top: 2px;
+        }
+        
+        .slot {
+            background: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            border: 2px dashed #ccc;
+            min-height: 70px;
+        }
+        
+        .slot.filled {
+            border: 2px solid var(--success);
+            background: #f0fff4;
+        }
+        
+        .slot-number {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .slot-label {
+            color: #666;
+            font-style: italic;
+            flex-grow: 1;
+        }
+        
+        .slot.filled .slot-label {
+            color: #333;
+            font-style: normal;
+            font-weight: 600;
         }
         
         .counter-display {
             text-align: center;
             font-size: 1.2rem;
             margin-bottom: 25px;
-            padding: 10px;
+            padding: 15px;
             border-radius: 10px;
             background: #f8f9fa;
+            font-weight: 600;
         }
         
         .counter-display span {
-            font-weight: bold;
             color: var(--primary);
         }
         
@@ -762,6 +832,17 @@
             z-index: 2;
         }
         
+        .match-number {
+            text-align: center;
+            padding: 5px;
+            font-size: 0.8rem;
+            color: #666;
+            border-top: 1px solid #eee;
+            background: #f8f9fa;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        
         /* BOTÃO DE VOLTAR FASE FIXO */
         .back-phase-fixed {
             position: fixed;
@@ -778,7 +859,7 @@
         
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         /* STATUS BAR */
@@ -867,6 +948,10 @@
             .team {
                 padding: 14px 16px;
             }
+            
+            .selection-area {
+                flex-direction: column;
+            }
         }
         
         @media (max-width: 768px) {
@@ -911,8 +996,8 @@
                 max-height: 85vh;
             }
             
-            .terceiros-container {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            .terceiros-container, .melhores-container {
+                min-height: 300px;
             }
             
             .bracket {
@@ -972,14 +1057,14 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-futbol"></i> Simulador Oficial - Copa do Mundo 2026</h1>
-            <p class="subtitle">Novo formato: 48 seleções, 12 grupos, fase de 16-avos</p>
+            <p class="subtitle">Novo formato: 48 seleções, 12 grupos, fase de 16-avos (Chaveamento OFICIAL FIFA)</p>
             
             <div class="tournament-info">
                 <h3><i class="fas fa-info-circle"></i> Como funciona a Copa 2026:</h3>
                 <ul>
                     <li><strong>48 seleções</strong> divididas em <strong>12 grupos de 4 times</strong></li>
                     <li>Classificam os <strong>2 primeiros de cada grupo (24 times)</strong> + <strong>8 melhores terceiros</strong></li>
-                    <li><strong>32 times</strong> avançam para o mata-mata</li>
+                    <li><strong>32 times</strong> avançam para o mata-mata com chaveamento FIXO da FIFA</li>
                     <li><strong>Nova fase:</strong> 16-avos de final (Round of 32)</li>
                     <li>Campeão joga <strong>8 partidas</strong> (antes eram 7)</li>
                 </ul>
@@ -987,7 +1072,7 @@
             
             <div class="controls">
                 <button class="btn btn-primary" id="btn-montar-chaveamento">
-                    <i class="fas fa-sitemap"></i> Montar Chaveamento (32 times)
+                    <i class="fas fa-sitemap"></i> Montar Chaveamento Oficial (32 times)
                 </button>
                 <button class="btn btn-success" id="btn-reset-grupos">
                     <i class="fas fa-redo"></i> Redefinir Grupos
@@ -1007,30 +1092,79 @@
             </div>
         </section>
         
-        <!-- MODAL DE SELEÇÃO DOS TERCEIROS COLOCADOS -->
+        <!-- MODAL DE SELEÇÃO DOS TERCEIROS COLOCADOS (REMODELADO) -->
         <div class="modal-overlay" id="modal-terceiros">
             <div class="modal">
                 <button class="close-modal" id="close-modal">&times;</button>
                 
-                <h2><i class="fas fa-users"></i> Selecionar Terceiros Colocados</h2>
-                <p class="modal-subtitle">Escolha os 8 terceiros colocados que avançarão para os 16-avos de final</p>
+                <h2><i class="fas fa-users"></i> Selecionar e Ordenar os 8 Melhores Terceiros</h2>
+                <p class="modal-subtitle">Arraste os 8 terceiros colocados da esquerda para a direita, ordenando-os do MELHOR (1º) para o OITAVO (8º) melhor</p>
                 
                 <div class="selection-instruction">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Instrução:</strong> Clique em 8 seleções abaixo para completar as 32 vagas do mata-mata
+                    <h4><i class="fas fa-info-circle"></i> Como funciona a seleção dos melhores terceiros:</h4>
+                    <p>1. A FIFA classifica os 8 melhores terceiros com base em: <strong>pontos, saldo de gols, gols pró, cartões e ranking FIFA</strong>.</p>
+                    <p>2. No simulador, <strong>VOCÊ define essa classificação</strong> através da ordem de arraste.</p>
+                    <p>3. <strong>A ordem importa!</strong> O primeiro time que você colocar na lista será considerado o MELHOR terceiro colocado, o segundo será o SEGUNDO melhor, e assim por diante.</p>
+                    <div class="important">
+                        <strong>Importante:</strong> Cada jogo dos 16-avos tem combinações específicas de grupos permitidos para os terceiros colocados. O simulador usará SUA classificação para alocar os times nos jogos seguindo as regras oficiais da FIFA.
+                    </div>
                 </div>
                 
                 <div class="counter-display">
                     Selecionados: <span id="contador-selecionados">0</span> de 8 terceiros colocados
                 </div>
                 
-                <div class="terceiros-container" id="terceiros-container">
-                    <!-- Lista de terceiros colocados será gerada aqui -->
+                <div class="selection-area">
+                    <div class="available-teams">
+                        <h3>Terceiros Disponíveis (12)</h3>
+                        <div class="terceiros-container" id="terceiros-disponiveis">
+                            <!-- Lista de terceiros disponíveis será gerada aqui -->
+                        </div>
+                    </div>
+                    
+                    <div class="selected-teams">
+                        <h3>Melhores Terceiros (Ordenados do Melhor ao Oitavo)</h3>
+                        <div class="melhores-container" id="melhores-container">
+                            <!-- 8 slots para os terceiros selecionados -->
+                            <div class="slot" data-slot="1">
+                                <div class="slot-number">1</div>
+                                <div class="slot-label">Melhor terceiro colocado</div>
+                            </div>
+                            <div class="slot" data-slot="2">
+                                <div class="slot-number">2</div>
+                                <div class="slot-label">2º melhor terceiro</div>
+                            </div>
+                            <div class="slot" data-slot="3">
+                                <div class="slot-number">3</div>
+                                <div class="slot-label">3º melhor terceiro</div>
+                            </div>
+                            <div class="slot" data-slot="4">
+                                <div class="slot-number">4</div>
+                                <div class="slot-label">4º melhor terceiro</div>
+                            </div>
+                            <div class="slot" data-slot="5">
+                                <div class="slot-number">5</div>
+                                <div class="slot-label">5º melhor terceiro</div>
+                            </div>
+                            <div class="slot" data-slot="6">
+                                <div class="slot-number">6</div>
+                                <div class="slot-label">6º melhor terceiro</div>
+                            </div>
+                            <div class="slot" data-slot="7">
+                                <div class="slot-number">7</div>
+                                <div class="slot-label">7º melhor terceiro</div>
+                            </div>
+                            <div class="slot" data-slot="8">
+                                <div class="slot-number">8</div>
+                                <div class="slot-label">8º melhor terceiro</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="modal-buttons">
                     <button class="btn btn-success" id="btn-confirmar-terceiros" disabled>
-                        <i class="fas fa-check"></i> Confirmar Seleção (8 times)
+                        <i class="fas fa-check"></i> Confirmar e Gerar Chaveamento Oficial
                     </button>
                     <button class="btn btn-warning" id="btn-cancelar-selecao">
                         <i class="fas fa-times"></i> Cancelar
@@ -1045,7 +1179,7 @@
         </div>
         
         <section class="bracket-section" id="bracket-section">
-            <h2><i class="fas fa-trophy"></i> Chaveamento - Fase Final (32 times)</h2>
+            <h2><i class="fas fa-trophy"></i> Chaveamento Oficial FIFA - Fase Final (32 times)</h2>
             
             <div class="bracket-container">
                 <div class="bracket" id="chaveamento-container">
@@ -1139,24 +1273,24 @@
         
         <footer>
             <p>Simulador do Novo Formato da Copa do Mundo 2026 | 48 seleções, 12 grupos, fase de 16-avos</p>
-            <p>Dados baseados no sorteio oficial de 5 de dezembro de 2025 | As 6 vagas de repescagem são representadas</p>
+            <p>Chaveamento baseado no calendário oficial FIFA publicado em 15 de Junho de 2024</p>
         </footer>
     </div>
 
     <script>
         // DADOS DOS 12 GRUPOS - FORMATO COPA 2026
         const gruposData = [
-            { letra: 'A', times: ['México', 'África do Sul', 'Coreia do Sul', 'Play-off 1'] },
-            { letra: 'B', times: ['Canadá', 'Play-off 2', 'Catar', 'Suíça'] },
+            { letra: 'A', times: ['México', 'África do Sul', 'Coreia do Sul', 'República Tcheca'] },
+            { letra: 'B', times: ['Canadá', 'Itália', 'Catar', 'Suíça'] },
             { letra: 'C', times: ['Brasil', 'Marrocos', 'Haiti', 'Escócia'] },
-            { letra: 'D', times: ['Estados Unidos', 'Paraguai', 'Austrália', 'Play-off 3'] },
+            { letra: 'D', times: ['Estados Unidos', 'Paraguai', 'Austrália', 'Turquia'] },
             { letra: 'E', times: ['Alemanha', 'Curaçao', 'Costa do Marfim', 'Equador'] },
-            { letra: 'F', times: ['Holanda', 'Japão', 'Play-off 4', 'Tunísia'] },
+            { letra: 'F', times: ['Holanda', 'Japão', 'Ucrânia', 'Tunísia'] },
             { letra: 'G', times: ['Bélgica', 'Egito', 'Irã', 'Nova Zelândia'] },
             { letra: 'H', times: ['Espanha', 'Cabo Verde', 'Arábia Saudita', 'Uruguai'] },
-            { letra: 'I', times: ['França', 'Senegal', 'Play-off 5', 'Noruega'] },
+            { letra: 'I', times: ['França', 'Senegal', 'Bolívia', 'Noruega'] },
             { letra: 'J', times: ['Argentina', 'Argélia', 'Áustria', 'Jordânia'] },
-            { letra: 'K', times: ['Portugal', 'Play-off 6', 'Uzbequistão', 'Colômbia'] },
+            { letra: 'K', times: ['Portugal', 'RD Congo', 'Uzbequistão', 'Colômbia'] },
             { letra: 'L', times: ['Inglaterra', 'Croácia', 'Gana', 'Panamá'] }
         ];
 
@@ -1183,19 +1317,40 @@
         let classificados = { 
             primeiros: [],   // 12 times (1º de cada grupo)
             segundos: [],    // 12 times (2º de cada grupo)
-            terceiros: []    // 8 melhores terceiros (SELECIONADOS PELO USUÁRIO)
+            terceiros: []    // 8 melhores terceiros (ORDENADOS PELO USUÁRIO)
         };
         
-        let todosTerceirosDisponiveis = []; // Todos os 12 terceiros colocados (BASEADO NA ORDEM ATUAL)
-        let terceirosSelecionados = [];     // Os 8 selecionados pelo usuário
+        let todosTerceirosDisponiveis = [];
+        let melhoresTerceirosOrdenados = []; // Array ordenado do melhor (0) para o pior (7)
         
-        let chaveamento = { 
-            r32: [],    // 16 jogos (32 times)
-            r16: [],    // 8 jogos (16 times)
-            qf: [],     // 4 jogos (8 times)
-            sf: [],     // 2 jogos (4 times)
-            final: [],  // 1 jogo (2 times)
-            terceiro: [] // 1 jogo (2 times)
+        // ESTRUTURA DO CHAVEAMENTO OFICIAL FIFA
+        let chaveamentoOficial = { 
+            r32: Array(16).fill(null).map((_, i) => ({ 
+                a: null, 
+                b: null, 
+                vencedor: null, 
+                numero: 73 + i 
+            })),
+            r16: Array(8).fill(null).map((_, i) => ({ 
+                a: null, 
+                b: null, 
+                vencedor: null, 
+                numero: 89 + i 
+            })),
+            qf: Array(4).fill(null).map((_, i) => ({ 
+                a: null, 
+                b: null, 
+                vencedor: null, 
+                numero: 97 + i 
+            })),
+            sf: Array(2).fill(null).map((_, i) => ({ 
+                a: null, 
+                b: null, 
+                vencedor: null, 
+                numero: 101 + i 
+            })),
+            final: [{ a: null, b: null, vencedor: null, numero: 104 }],
+            terceiro: [{ a: null, b: null, vencedor: null, numero: 103 }]
         };
         
         let faseAtual = '32avos';
@@ -1223,7 +1378,7 @@
                     <ul class="team-list" data-grupo="${grupo.letra}" id="grupo-${grupo.letra}">
                         ${grupo.times.map((time, index) => `
                             <li class="team-item ${index === 0 ? 'primeiro' : index === 1 ? 'segundo' : index === 2 ? 'terceiro' : 'quarto'}" 
-                                data-time="${time}" draggable="true">
+                                data-time="${time}" data-grupo="${grupo.letra}" draggable="true">
                                 <div class="team-pos">${index + 1}</div>
                                 <div class="team-flag">${flags[time] || '🏴'}</div>
                                 <div class="team-name">${time}</div>
@@ -1239,7 +1394,7 @@
             configurarDragAndDrop();
         }
 
-        // Configuração do drag-and-drop
+        // Configuração do drag-and-drop para grupos
         function configurarDragAndDrop() {
             const lists = document.querySelectorAll('.team-list');
             
@@ -1249,7 +1404,7 @@
                     const afterElement = getDragAfterElement(list, e.clientY);
                     const draggable = document.querySelector('.team-item.dragging');
                     
-                    if (draggable && list.dataset.grupo === draggable.closest('.team-list').dataset.grupo) {
+                    if (draggable && list.dataset.grupo === draggable.dataset.grupo) {
                         if (afterElement == null) {
                             list.appendChild(draggable);
                         } else {
@@ -1336,17 +1491,14 @@
             });
         }
 
-        // Calcula os classificados (primeiros e segundos) BASEADO NA ORDEM ATUAL DO USUÁRIO
+        // Calcula os classificados baseado na ordem atual
         function calcularPrimeirosESegundos() {
             classificados = { primeiros: [], segundos: [], terceiros: [] };
             todosTerceirosDisponiveis = [];
             
-            // CORREÇÃO: Usa a ordem atual definida pelo usuário (grupoOrdenado)
-            // Não simula resultados, usa a posição atual na interface
             grupoOrdenado.forEach(grupo => {
-                const times = grupo.times; // Já está na ordem definida pelo usuário
+                const times = grupo.times;
                 
-                // Adiciona os classificados baseado na posição atual (0 = 1º, 1 = 2º, 2 = 3º)
                 classificados.primeiros.push({ 
                     grupo: grupo.letra, 
                     time: times[0]
@@ -1357,7 +1509,6 @@
                     time: times[1]
                 });
                 
-                // Adiciona terceiro à lista disponível
                 todosTerceirosDisponiveis.push({
                     grupo: grupo.letra,
                     time: times[2]
@@ -1367,215 +1518,425 @@
             return classificados;
         }
 
-        // Abre o modal para seleção dos terceiros
+        // Abre o modal para seleção e ordenação dos terceiros
         function abrirModalSelecaoTerceiros() {
-            // Calcula primeiros e segundos BASEADO NA ORDEM ATUAL
             calcularPrimeirosESegundos();
+            melhoresTerceirosOrdenados = [];
             
-            // Limpa seleções anteriores
-            terceirosSelecionados = [];
-            
-            // Renderiza a lista de terceiros disponíveis (BASEADO NA ORDEM ATUAL)
-            const container = document.getElementById('terceiros-container');
-            container.innerHTML = '';
+            // Renderizar terceiros disponíveis
+            const containerDisponiveis = document.getElementById('terceiros-disponiveis');
+            containerDisponiveis.innerHTML = '';
             
             todosTerceirosDisponiveis.forEach((terceiro, index) => {
                 const item = document.createElement('div');
                 item.className = 'terceiro-item';
-                item.dataset.index = index;
+                item.dataset.grupo = terceiro.grupo;
+                item.dataset.time = terceiro.time;
+                item.draggable = true;
                 item.innerHTML = `
-                    <div class="terceiro-checkbox"></div>
-                    <div class="terceiro-info">
-                        <div class="team-flag" style="font-size: 1.5rem; display: inline-block; margin-right: 10px;">
-                            ${flags[terceiro.time] || '🏴'}
-                        </div>
-                        <strong>${terceiro.time}</strong>
+                    <div class="team-flag">${flags[terceiro.time] || '🏴'}</div>
+                    <div>
+                        <div class="team-name">${terceiro.time}</div>
                         <div class="terceiro-group">Grupo ${terceiro.grupo}</div>
                     </div>
+                    <i class="fas fa-arrows-alt-v" style="color: #aaa; margin-left: auto;"></i>
                 `;
                 
-                item.addEventListener('click', () => {
-                    toggleSelecaoTerceiro(index, item);
-                });
-                
-                container.appendChild(item);
+                containerDisponiveis.appendChild(item);
             });
             
-            // Atualiza contador
-            atualizarContadorSelecao();
+            // Limpar slots
+            document.querySelectorAll('.slot').forEach(slot => {
+                slot.classList.remove('filled');
+                const slotLabel = slot.querySelector('.slot-label');
+                slotLabel.textContent = slot.dataset.slot === '1' ? 'Melhor terceiro colocado' : 
+                                      slot.dataset.slot === '2' ? '2º melhor terceiro' :
+                                      slot.dataset.slot === '3' ? '3º melhor terceiro' :
+                                      slot.dataset.slot === '4' ? '4º melhor terceiro' :
+                                      slot.dataset.slot === '5' ? '5º melhor terceiro' :
+                                      slot.dataset.slot === '6' ? '6º melhor terceiro' :
+                                      slot.dataset.slot === '7' ? '7º melhor terceiro' : '8º melhor terceiro';
+            });
             
-            // Mostra o modal
+            atualizarContadorSelecao();
+            configurarDragAndDropModal();
             document.getElementById('modal-terceiros').classList.add('active');
         }
 
-        // Alterna seleção de um terceiro
-        function toggleSelecaoTerceiro(index, elemento) {
-            const terceiro = todosTerceirosDisponiveis[index];
+        // Configura drag-and-drop para o modal
+        function configurarDragAndDropModal() {
+            const slots = document.querySelectorAll('.slot');
+            const disponiveis = document.getElementById('terceiros-disponiveis');
             
-            // Verifica se já está selecionado
-            const jaSelecionado = terceirosSelecionados.some(t => t.time === terceiro.time);
-            
-            if (jaSelecionado) {
-                // Remove da seleção
-                terceirosSelecionados = terceirosSelecionados.filter(t => t.time !== terceiro.time);
-                elemento.classList.remove('selected');
-            } else {
-                // Verifica se já selecionou 8
-                if (terceirosSelecionados.length >= 8) {
-                    alert('Você já selecionou 8 terceiros colocados. Desmarque um para selecionar outro.');
-                    return;
+            // Eventos para itens disponíveis
+            disponiveis.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('terceiro-item')) {
+                    itemArrastando = e.target;
+                    e.target.classList.add('dragging');
+                    setTimeout(() => {
+                        e.target.style.opacity = '0.4';
+                    }, 0);
                 }
-                
-                // Adiciona à seleção
-                terceirosSelecionados.push(terceiro);
-                elemento.classList.add('selected');
-            }
+            });
             
-            // Atualiza contador e habilita/desabilita botão
-            atualizarContadorSelecao();
+            disponiveis.addEventListener('dragend', (e) => {
+                if (e.target.classList.contains('terceiro-item')) {
+                    e.target.classList.remove('dragging');
+                    e.target.style.opacity = '';
+                    itemArrastando = null;
+                }
+            });
+            
+            // Eventos para slots
+            slots.forEach(slot => {
+                slot.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+                
+                slot.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    if (itemArrastando && !slot.classList.contains('filled')) {
+                        slot.style.backgroundColor = '#e8f5e9';
+                    }
+                });
+                
+                slot.addEventListener('dragleave', (e) => {
+                    if (itemArrastando && !slot.classList.contains('filled')) {
+                        slot.style.backgroundColor = '';
+                    }
+                });
+                
+                slot.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    slot.style.backgroundColor = '';
+                    
+                    if (itemArrastando && !slot.classList.contains('filled')) {
+                        // Remover de qualquer slot existente
+                        document.querySelectorAll('.slot').forEach(s => {
+                            if (s.querySelector(`[data-time="${itemArrastando.dataset.time}"]`)) {
+                                s.classList.remove('filled');
+                                const label = s.querySelector('.slot-label');
+                                label.textContent = s.dataset.slot === '1' ? 'Melhor terceiro colocado' : 
+                                                   s.dataset.slot === '2' ? '2º melhor terceiro' :
+                                                   s.dataset.slot === '3' ? '3º melhor terceiro' :
+                                                   s.dataset.slot === '4' ? '4º melhor terceiro' :
+                                                   s.dataset.slot === '5' ? '5º melhor terceiro' :
+                                                   s.dataset.slot === '6' ? '6º melhor terceiro' :
+                                                   s.dataset.slot === '7' ? '7º melhor terceiro' : '8º melhor terceiro';
+                            }
+                        });
+                        
+                        // Adicionar ao novo slot
+                        const clone = itemArrastando.cloneNode(true);
+                        clone.style.opacity = '1';
+                        clone.classList.remove('dragging');
+                        clone.draggable = false;
+                        clone.style.cursor = 'default';
+                        
+                        const label = slot.querySelector('.slot-label');
+                        label.innerHTML = `
+                            <div class="team-name">${itemArrastando.dataset.time}</div>
+                            <div class="terceiro-group">Grupo ${itemArrastando.dataset.grupo}</div>
+                        `;
+                        
+                        slot.classList.add('filled');
+                        
+                        // Adicionar botão de remover
+                        const removeBtn = document.createElement('button');
+                        removeBtn.innerHTML = '<i class="fas fa-times" style="color: #ff4757;"></i>';
+                        removeBtn.style.background = 'none';
+                        removeBtn.style.border = 'none';
+                        removeBtn.style.cursor = 'pointer';
+                        removeBtn.style.marginLeft = 'auto';
+                        removeBtn.addEventListener('click', () => {
+                            slot.classList.remove('filled');
+                            label.textContent = slot.dataset.slot === '1' ? 'Melhor terceiro colocado' : 
+                                              slot.dataset.slot === '2' ? '2º melhor terceiro' :
+                                              slot.dataset.slot === '3' ? '3º melhor terceiro' :
+                                              slot.dataset.slot === '4' ? '4º melhor terceiro' :
+                                              slot.dataset.slot === '5' ? '5º melhor terceiro' :
+                                              slot.dataset.slot === '6' ? '6º melhor terceiro' :
+                                              slot.dataset.slot === '7' ? '7º melhor terceiro' : '8º melhor terceiro';
+                            atualizarContadorSelecao();
+                        });
+                        
+                        slot.appendChild(removeBtn);
+                        
+                        atualizarContadorSelecao();
+                    }
+                });
+            });
+            
+            // Permitir arrastar de volta para disponíveis
+            disponiveis.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            
+            disponiveis.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (itemArrastando && !itemArrastando.parentElement.classList.contains('terceiros-container')) {
+                    // Remover do slot
+                    document.querySelectorAll('.slot').forEach(slot => {
+                        if (slot.querySelector(`[data-time="${itemArrastando.dataset.time}"]`)) {
+                            slot.classList.remove('filled');
+                            const label = slot.querySelector('.slot-label');
+                            label.textContent = slot.dataset.slot === '1' ? 'Melhor terceiro colocado' : 
+                                              slot.dataset.slot === '2' ? '2º melhor terceiro' :
+                                              slot.dataset.slot === '3' ? '3º melhor terceiro' :
+                                              slot.dataset.slot === '4' ? '4º melhor terceiro' :
+                                              slot.dataset.slot === '5' ? '5º melhor terceiro' :
+                                              slot.dataset.slot === '6' ? '6º melhor terceiro' :
+                                              slot.dataset.slot === '7' ? '7º melhor terceiro' : '8º melhor terceiro';
+                        }
+                    });
+                    
+                    itemArrastando.style.opacity = '1';
+                    atualizarContadorSelecao();
+                }
+            });
         }
 
         // Atualiza o contador de seleção
         function atualizarContadorSelecao() {
+            const slotsPreenchidos = document.querySelectorAll('.slot.filled').length;
             const contador = document.getElementById('contador-selecionados');
             const btnConfirmar = document.getElementById('btn-confirmar-terceiros');
             
-            contador.textContent = terceirosSelecionados.length;
+            contador.textContent = slotsPreenchidos;
             
-            // Habilita botão se tiver 8 selecionados
-            if (terceirosSelecionados.length === 8) {
+            if (slotsPreenchidos === 8) {
                 btnConfirmar.disabled = false;
-                btnConfirmar.innerHTML = '<i class="fas fa-check"></i> Confirmar Seleção (8 times)';
+                btnConfirmar.innerHTML = '<i class="fas fa-check"></i> Confirmar e Gerar Chaveamento Oficial';
             } else {
                 btnConfirmar.disabled = true;
-                btnConfirmar.innerHTML = `<i class="fas fa-check"></i> Selecione mais ${8 - terceirosSelecionados.length}`;
+                btnConfirmar.innerHTML = `<i class="fas fa-check"></i> Selecione mais ${8 - slotsPreenchidos}`;
             }
         }
 
-        // Confirma a seleção dos terceiros e monta o chaveamento
-        function confirmarSelecaoTerceiros() {
-            if (terceirosSelecionados.length !== 8) {
-                alert('Por favor, selecione exatamente 8 terceiros colocados.');
-                return;
+        // ====================================================================
+        // FUNÇÕES PRINCIPAIS DO CHAVEAMENTO OFICIAL FIFA
+        // ====================================================================
+
+        // Determina qual terceiro colocado vai para qual jogo baseado na ordem do usuário
+        function determinarTerceiroParaJogo(numeroJogo, gruposPossiveis) {
+            // Buscar entre os terceiros ordenados (do melhor para o pior)
+            for (let i = 0; i < melhoresTerceirosOrdenados.length; i++) {
+                const terceiro = melhoresTerceirosOrdenados[i];
+                // Verificar se o grupo deste terceiro está nos grupos permitidos
+                if (gruposPossiveis.includes(terceiro.grupo)) {
+                    // Remover da lista para não ser reutilizado
+                    melhoresTerceirosOrdenados.splice(i, 1);
+                    return terceiro.time;
+                }
             }
-            
-            // Atualiza os classificados com os terceiros selecionados
-            classificados.terceiros = terceirosSelecionados;
-            
-            // Fecha o modal
-            document.getElementById('modal-terceiros').classList.remove('active');
-            
-            // Monta o chaveamento
-            montarChaveamentoAposSelecao();
+            return 'Time Indefinido';
         }
 
-        // Monta o chaveamento após seleção dos terceiros
-        function montarChaveamentoAposSelecao() {
-            // Limpa chaveamentos anteriores
-            chaveamento = { 
-                r32: [], r16: [], qf: [], sf: [], final: [], terceiro: []
+        // MONTA O CHAVEAMENTO OFICIAL FIFA 2026
+        function montarChaveamentoOficialFIFA() {
+            // 1. Encontrar classificados por grupo
+            const primeirosPorGrupo = {};
+            const segundosPorGrupo = {};
+            
+            classificados.primeiros.forEach(p => primeirosPorGrupo[p.grupo] = p.time);
+            classificados.segundos.forEach(s => segundosPorGrupo[s.grupo] = s.time);
+            
+            // 2. Preparar lista de terceiros ordenados (do melhor para o pior)
+            melhoresTerceirosOrdenados = [];
+            document.querySelectorAll('.slot.filled').forEach(slot => {
+                const slotNum = parseInt(slot.dataset.slot);
+                const time = slot.querySelector('.team-name').textContent;
+                const grupo = slot.querySelector('.terceiro-group').textContent.replace('Grupo ', '');
+                melhoresTerceirosOrdenados[slotNum - 1] = { grupo, time };
+            });
+            
+            // Criar uma cópia para usar nas determinações
+            let terceirosParaAlocacao = [...melhoresTerceirosOrdenados];
+            
+            // 3. MONTAR OS 16 JOGOS DA FASE DE 32
+            
+            // Jogo 73: 2A vs 2B
+            chaveamentoOficial.r32[0] = {
+                a: segundosPorGrupo['A'] || '2A',
+                b: segundosPorGrupo['B'] || '2B',
+                vencedor: null,
+                numero: 73
             };
             
-            historicoFases = [];
+            // Jogo 74: 1E vs 3rd (A/B/C/D/F)
+            chaveamentoOficial.r32[1] = {
+                a: primeirosPorGrupo['E'] || '1E',
+                b: encontrarTerceiroParaGrupos(['A', 'B', 'C', 'D', 'F'], terceirosParaAlocacao),
+                vencedor: null,
+                numero: 74
+            };
             
-            // CHAVEAMENTO OFICIAL DA COPA 2026 (SIMPLIFICADO)
-            // Primeiros colocados vs Terceiros selecionados (8 confrontos)
-            for (let i = 0; i < 8; i++) {
-                if (classificados.primeiros[i] && classificados.terceiros[i]) {
-                    chaveamento.r32.push({
-                        a: classificados.primeiros[i].time,
-                        b: classificados.terceiros[i].time,
-                        vencedor: null
-                    });
-                }
-            }
+            // Jogo 75: 1F vs 2C
+            chaveamentoOficial.r32[2] = {
+                a: primeirosPorGrupo['F'] || '1F',
+                b: segundosPorGrupo['C'] || '2C',
+                vencedor: null,
+                numero: 75
+            };
             
-            // Restantes dos primeiros + Segundos colocados (8 confrontos)
-            for (let i = 8; i < 12; i++) {
-                if (classificados.primeiros[i] && classificados.segundos[i-8]) {
-                    chaveamento.r32.push({
-                        a: classificados.primeiros[i].time,
-                        b: classificados.segundos[i-8].time,
-                        vencedor: null
-                    });
-                }
-            }
+            // Jogo 76: 1C vs 2F
+            chaveamentoOficial.r32[3] = {
+                a: primeirosPorGrupo['C'] || '1C',
+                b: segundosPorGrupo['F'] || '2F',
+                vencedor: null,
+                numero: 76
+            };
             
-            // Cruzamento entre segundos colocados restantes
-            for (let i = 4; i < 12; i++) {
-                if (classificados.segundos[i]) {
-                    const oponenteIndex = (i + 4) % 8 + 4;
-                    const oponente = classificados.segundos[oponenteIndex] || classificados.segundos[4];
-                    
-                    if (oponente && classificados.segundos[i].time !== oponente.time) {
-                        chaveamento.r32.push({
-                            a: classificados.segundos[i].time,
-                            b: oponente.time,
-                            vencedor: null
-                        });
-                    }
-                }
-            }
+            // Jogo 77: 1I vs 3rd (C/D/F/G/H)
+            chaveamentoOficial.r32[4] = {
+                a: primeirosPorGrupo['I'] || '1I',
+                b: encontrarTerceiroParaGrupos(['C', 'D', 'F', 'G', 'H'], terceirosParaAlocacao),
+                vencedor: null,
+                numero: 77
+            };
             
-            // Garantir que temos exatamente 16 confrontos
-            chaveamento.r32 = chaveamento.r32.slice(0, 16);
+            // Jogo 78: 2E vs 2I
+            chaveamentoOficial.r32[5] = {
+                a: segundosPorGrupo['E'] || '2E',
+                b: segundosPorGrupo['I'] || '2I',
+                vencedor: null,
+                numero: 78
+            };
             
-            // Salva estado inicial
+            // Jogo 79: 1A vs 3rd (C/E/F/H/I)
+            chaveamentoOficial.r32[6] = {
+                a: primeirosPorGrupo['A'] || '1A',
+                b: encontrarTerceiroParaGrupos(['C', 'E', 'F', 'H', 'I'], terceirosParaAlocacao),
+                vencedor: null,
+                numero: 79
+            };
+            
+            // Jogo 80: 1L vs 3rd (E/H/I/J/K)
+            chaveamentoOficial.r32[7] = {
+                a: primeirosPorGrupo['L'] || '1L',
+                b: encontrarTerceiroParaGrupos(['E', 'H', 'I', 'J', 'K'], terceirosParaAlocacao),
+                vencedor: null,
+                numero: 80
+            };
+            
+            // Jogo 81: 1D vs 3rd (B/E/F/I/J)
+            chaveamentoOficial.r32[8] = {
+                a: primeirosPorGrupo['D'] || '1D',
+                b: encontrarTerceiroParaGrupos(['B', 'E', 'F', 'I', 'J'], terceirosParaAlocacao),
+                vencedor: null,
+                numero: 81
+            };
+            
+            // Jogo 82: 1G vs 3rd (A/E/H/I/J)
+            chaveamentoOficial.r32[9] = {
+                a: primeirosPorGrupo['G'] || '1G',
+                b: encontrarTerceiroParaGrupos(['A', 'E', 'H', 'I', 'J'], terceirosParaAlocacao),
+                vencedor: null,
+                numero: 82
+            };
+            
+            // Jogo 83: 2K vs 2L
+            chaveamentoOficial.r32[10] = {
+                a: segundosPorGrupo['K'] || '2K',
+                b: segundosPorGrupo['L'] || '2L',
+                vencedor: null,
+                numero: 83
+            };
+            
+            // Jogo 84: 1H vs 2J
+            chaveamentoOficial.r32[11] = {
+                a: primeirosPorGrupo['H'] || '1H',
+                b: segundosPorGrupo['J'] || '2J',
+                vencedor: null,
+                numero: 84
+            };
+            
+            // Jogo 85: 1B vs 3rd (E/F/G/I/J)
+            chaveamentoOficial.r32[12] = {
+                a: primeirosPorGrupo['B'] || '1B',
+                b: encontrarTerceiroParaGrupos(['E', 'F', 'G', 'I', 'J'], terceirosParaAlocacao),
+                vencedor: null,
+                numero: 85
+            };
+            
+            // Jogo 86: 1J vs 2H
+            chaveamentoOficial.r32[13] = {
+                a: primeirosPorGrupo['J'] || '1J',
+                b: segundosPorGrupo['H'] || '2H',
+                vencedor: null,
+                numero: 86
+            };
+            
+            // Jogo 87: 1K vs 3rd (D/E/I/J/L)
+            chaveamentoOficial.r32[14] = {
+                a: primeirosPorGrupo['K'] || '1K',
+                b: encontrarTerceiroParaGrupos(['D', 'E', 'I', 'J', 'L'], terceirosParaAlocacao),
+                vencedor: null,
+                numero: 87
+            };
+            
+            // Jogo 88: 2D vs 2G
+            chaveamentoOficial.r32[15] = {
+                a: segundosPorGrupo['D'] || '2D',
+                b: segundosPorGrupo['G'] || '2G',
+                vencedor: null,
+                numero: 88
+            };
+            
+            // Salvar estado inicial
             salvarEstadoFase();
             
-            // Mostra seção do chaveamento
+            // Renderizar e mostrar
+            renderizarChaveamentoOficial();
             document.getElementById('bracket-section').style.display = 'block';
             
-            // Renderiza o chaveamento
-            renderizarChaveamento();
-            
-            // Atualiza status
             faseAtual = '32avos';
             todasFasesCompletas = false;
             atualizarStatus();
             verificarFaseCompleta();
             atualizarBotaoVoltarFase();
             
-            // Scroll para o chaveamento
             document.getElementById('bracket-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // SALVA ESTADO NO HISTÓRICO
-        function salvarEstadoFase() {
-            historicoFases.push({
-                fase: faseAtual,
-                chaveamento: JSON.parse(JSON.stringify(chaveamento)),
-                classificados: JSON.parse(JSON.stringify(classificados)),
-                terceirosSelecionados: [...terceirosSelecionados]
+        // Encontra terceiro para grupos específicos (considerando ordem do usuário)
+        function encontrarTerceiroParaGrupos(gruposPermitidos, terceirosLista) {
+            for (let i = 0; i < terceirosLista.length; i++) {
+                if (terceirosLista[i] && gruposPermitidos.includes(terceirosLista[i].grupo)) {
+                    const time = terceirosLista[i].time;
+                    terceirosLista.splice(i, 1); // Remove para não reutilizar
+                    return time;
+                }
+            }
+            return 'Time Indefinido';
+        }
+
+        // Confirma a seleção dos terceiros e monta o chaveamento OFICIAL
+        function confirmarSelecaoTerceiros() {
+            const slotsPreenchidos = document.querySelectorAll('.slot.filled').length;
+            
+            if (slotsPreenchidos !== 8) {
+                alert('Por favor, selecione e ordene exatamente 8 terceiros colocados.');
+                return;
+            }
+            
+            // Coletar terceiros ordenados
+            classificados.terceiros = [];
+            document.querySelectorAll('.slot.filled').forEach(slot => {
+                const slotNum = parseInt(slot.dataset.slot);
+                const time = slot.querySelector('.team-name').textContent;
+                const grupo = slot.querySelector('.terceiro-group').textContent.replace('Grupo ', '');
+                classificados.terceiros.push({ grupo, time, posicao: slotNum });
             });
             
-            if (historicoFases.length > 10) {
-                historicoFases.shift();
-            }
+            document.getElementById('modal-terceiros').classList.remove('active');
+            
+            montarChaveamentoOficialFIFA();
         }
 
-        // VOLTA FASE ANTERIOR
-        function voltarFaseAnterior() {
-            if (historicoFases.length === 0) return;
-            
-            const estadoAnterior = historicoFases.pop();
-            
-            chaveamento = JSON.parse(JSON.stringify(estadoAnterior.chaveamento));
-            faseAtual = estadoAnterior.fase;
-            classificados = JSON.parse(JSON.stringify(estadoAnterior.classificados));
-            
-            if (estadoAnterior.terceirosSelecionados) {
-                terceirosSelecionados = [...estadoAnterior.terceirosSelecionados];
-            }
-            
-            renderizarChaveamento();
-            atualizarStatus();
-            verificarFaseCompleta();
-            atualizarBotaoVoltarFase();
-        }
-
-        // RENDERIZA O CHAVEAMENTO COMPLETO
-        function renderizarChaveamento() {
+        // RENDERIZA O CHAVEAMENTO OFICIAL FIFA
+        function renderizarChaveamentoOficial() {
+            // Limpar colunas
             const idsColunas = [
                 'round-32-left', 'round-32-right',
                 'round-16-left', 'round-16-right',
@@ -1592,61 +1953,91 @@
                 }
             });
             
-            // Renderiza 16-avos
+            // Renderizar 16-avos (divididos entre esquerda e direita)
             const round32Left = document.getElementById('round-32-left');
             const round32Right = document.getElementById('round-32-right');
             
-            chaveamento.r32.slice(0, 8).forEach((conf, idx) => {
-                const match = criarElementoConfronto('r32', idx, conf);
+            // Primeiros 8 jogos à esquerda
+            chaveamentoOficial.r32.slice(0, 8).forEach((jogo, idx) => {
+                const match = criarElementoConfrontoOficial('r32', idx, jogo);
                 round32Left.appendChild(match);
             });
             
-            chaveamento.r32.slice(8, 16).forEach((conf, idx) => {
-                const match = criarElementoConfronto('r32', idx + 8, conf);
+            // Últimos 8 jogos à direita
+            chaveamentoOficial.r32.slice(8, 16).forEach((jogo, idx) => {
+                const match = criarElementoConfrontoOficial('r32', idx + 8, jogo);
                 round32Right.appendChild(match);
             });
             
-            // Renderiza Oitavas
-            const round16Left = document.getElementById('round-16-left');
-            const round16Right = document.getElementById('round-16-right');
+            // Se já houver jogos das oitavas definidos, renderizá-los
+            if (chaveamentoOficial.r16.some(j => j.a)) {
+                renderizarRodadaOficial('r16');
+            }
             
-            chaveamento.r16.slice(0, 4).forEach((conf, idx) => {
-                const match = criarElementoConfronto('r16', idx, conf);
-                round16Left.appendChild(match);
-            });
+            // Se já houver jogos das quartas definidos, renderizá-los
+            if (chaveamentoOficial.qf.some(j => j.a)) {
+                renderizarRodadaOficial('qf');
+            }
             
-            chaveamento.r16.slice(4, 8).forEach((conf, idx) => {
-                const match = criarElementoConfronto('r16', idx + 4, conf);
-                round16Right.appendChild(match);
-            });
+            // Se já houver jogos das semis definidos, renderizá-los
+            if (chaveamentoOficial.sf.some(j => j.a)) {
+                renderizarRodadaOficial('sf');
+            }
             
-            // Renderiza Quartas
-            const quartersLeft = document.getElementById('quarters-left');
-            const quartersRight = document.getElementById('quarters-right');
+            // Renderizar Final e 3º Lugar
+            renderizarFinalETerceiro();
             
-            chaveamento.qf.slice(0, 2).forEach((conf, idx) => {
-                const match = criarElementoConfronto('qf', idx, conf);
-                quartersLeft.appendChild(match);
-            });
+            configurarEventosChaveamentoOficial();
+        }
+
+        // Renderiza uma rodada específica (oitavas, quartas, etc.)
+        function renderizarRodadaOficial(rodada) {
+            const colunaMap = {
+                'r16': { left: 'round-16-left', right: 'round-16-right' },
+                'qf': { left: 'quarters-left', right: 'quarters-right' },
+                'sf': { left: 'semis-left', right: 'semis-right' }
+            };
             
-            chaveamento.qf.slice(2, 4).forEach((conf, idx) => {
-                const match = criarElementoConfronto('qf', idx + 2, conf);
-                quartersRight.appendChild(match);
-            });
+            const colunas = colunaMap[rodada];
+            if (!colunas) return;
             
-            // Renderiza Semifinais
-            const semisLeft = document.getElementById('semis-left');
-            chaveamento.sf.forEach((conf, idx) => {
-                if (idx < 2) {
-                    const match = criarElementoConfronto('sf', idx, conf);
-                    semisLeft.appendChild(match);
+            const leftContainer = document.getElementById(colunas.left);
+            const rightContainer = document.getElementById(colunas.right);
+            
+            if (!leftContainer || !rightContainer) return;
+            
+            // Limpar colunas
+            leftContainer.querySelectorAll('.match').forEach(m => m.remove());
+            rightContainer.querySelectorAll('.match').forEach(m => m.remove());
+            
+            const jogos = chaveamentoOficial[rodada];
+            const metade = Math.ceil(jogos.length / 2);
+            
+            // Primeira metade à esquerda
+            jogos.slice(0, metade).forEach((jogo, idx) => {
+                if (jogo.a) {
+                    const match = criarElementoConfrontoOficial(rodada, idx, jogo);
+                    leftContainer.appendChild(match);
                 }
             });
             
-            // Renderiza Final
+            // Segunda metade à direita
+            jogos.slice(metade).forEach((jogo, idx) => {
+                if (jogo.a) {
+                    const match = criarElementoConfrontoOficial(rodada, idx + metade, jogo);
+                    rightContainer.appendChild(match);
+                }
+            });
+        }
+
+        // Renderiza Final e 3º Lugar
+        function renderizarFinalETerceiro() {
             const finalMatch = document.getElementById('final-match');
-            if (chaveamento.final.length > 0) {
-                const conf = chaveamento.final[0];
+            const thirdPlaceMatch = document.getElementById('third-place-match');
+            
+            // Final
+            if (chaveamentoOficial.final[0].a) {
+                const conf = chaveamentoOficial.final[0];
                 finalMatch.innerHTML = `
                     <div class="team ${conf.vencedor === conf.a ? 'winner' : ''}" data-match="final-0" data-team="a">
                         <span><span class="flag">${flags[conf.a] || '🏴'}</span> <span class="name">${conf.a}</span></span>
@@ -1654,13 +2045,13 @@
                     <div class="team ${conf.vencedor === conf.b ? 'winner' : ''}" data-match="final-0" data-team="b">
                         <span><span class="flag">${flags[conf.b] || '🏴'}</span> <span class="name">${conf.b}</span></span>
                     </div>
+                    <div class="match-number">Final - Jogo ${conf.numero}</div>
                 `;
             }
             
-            // Renderiza 3º Lugar
-            const thirdPlaceMatch = document.getElementById('third-place-match');
-            if (chaveamento.terceiro.length > 0) {
-                const conf = chaveamento.terceiro[0];
+            // 3º Lugar
+            if (chaveamentoOficial.terceiro[0].a) {
+                const conf = chaveamentoOficial.terceiro[0];
                 thirdPlaceMatch.innerHTML = `
                     <div class="team ${conf.vencedor === conf.a ? 'winner' : ''}" data-match="terceiro-0" data-team="a">
                         <span><span class="flag">${flags[conf.a] || '🏴'}</span> <span class="name">${conf.a}</span></span>
@@ -1668,16 +2059,21 @@
                     <div class="team ${conf.vencedor === conf.b ? 'winner' : ''}" data-match="terceiro-0" data-team="b">
                         <span><span class="flag">${flags[conf.b] || '🏴'}</span> <span class="name">${conf.b}</span></span>
                     </div>
+                    <div class="match-number">3º Lugar - Jogo ${conf.numero}</div>
                 `;
             }
-            
-            configurarEventosChaveamento();
         }
 
-        // CRIA ELEMENTO DE CONFRONTO
-        function criarElementoConfronto(fase, idx, conf) {
+        // Cria elemento de confronto OFICIAL (com número do jogo)
+        function criarElementoConfrontoOficial(fase, idx, conf) {
             const match = document.createElement('div');
             match.className = 'match';
+            
+            // Estilo especial para a final
+            if (conf.numero === 104) {
+                match.classList.add('final-match');
+            }
+            
             match.innerHTML = `
                 <div class="team ${conf.vencedor === conf.a ? 'winner' : ''}" data-match="${fase}-${idx}" data-team="a">
                     <span><span class="flag">${flags[conf.a] || '🏴'}</span> <span class="name">${conf.a}</span></span>
@@ -1685,12 +2081,13 @@
                 <div class="team ${conf.vencedor === conf.b ? 'winner' : ''}" data-match="${fase}-${idx}" data-team="b">
                     <span><span class="flag">${flags[conf.b] || '🏴'}</span> <span class="name">${conf.b}</span></span>
                 </div>
+                <div class="match-number">Jogo ${conf.numero}</div>
             `;
             return match;
         }
 
-        // CONFIGURA EVENTOS DO CHAVEAMENTO
-        function configurarEventosChaveamento() {
+        // CONFIGURA EVENTOS DO CHAVEAMENTO OFICIAL
+        function configurarEventosChaveamentoOficial() {
             document.querySelectorAll('.team').forEach(team => {
                 team.addEventListener('click', function() {
                     if (todasFasesCompletas) return;
@@ -1707,42 +2104,21 @@
                     
                     let confronto;
                     switch(fase) {
-                        case 'r32': confronto = chaveamento.r32[matchIdx]; break;
-                        case 'r16': confronto = chaveamento.r16[matchIdx]; break;
-                        case 'qf': confronto = chaveamento.qf[matchIdx]; break;
-                        case 'sf': confronto = chaveamento.sf[matchIdx]; break;
-                        case 'final': confronto = chaveamento.final[matchIdx]; break;
-                        case 'terceiro': confronto = chaveamento.terceiro[matchIdx]; break;
+                        case 'r32': confronto = chaveamentoOficial.r32[matchIdx]; break;
+                        case 'r16': confronto = chaveamentoOficial.r16[matchIdx]; break;
+                        case 'qf': confronto = chaveamentoOficial.qf[matchIdx]; break;
+                        case 'sf': confronto = chaveamentoOficial.sf[matchIdx]; break;
+                        case 'final': confronto = chaveamentoOficial.final[matchIdx]; break;
+                        case 'terceiro': confronto = chaveamentoOficial.terceiro[matchIdx]; break;
                     }
                     
-                    if (confronto) {
+                    if (confronto && confronto.a && confronto.b) {
                         confronto.vencedor = teamSide === 'a' ? confronto.a : confronto.b;
                         
-                        if (fase === 'r32') {
-                            chaveamento.r16 = [];
-                            chaveamento.qf = [];
-                            chaveamento.sf = [];
-                            chaveamento.final = [];
-                            chaveamento.terceiro = [];
-                            faseAtual = '32avos';
-                        } else if (fase === 'r16') {
-                            chaveamento.qf = [];
-                            chaveamento.sf = [];
-                            chaveamento.final = [];
-                            chaveamento.terceiro = [];
-                            faseAtual = '16avos';
-                        } else if (fase === 'qf') {
-                            chaveamento.sf = [];
-                            chaveamento.final = [];
-                            chaveamento.terceiro = [];
-                            faseAtual = 'quartas';
-                        } else if (fase === 'sf') {
-                            chaveamento.final = [];
-                            chaveamento.terceiro = [];
-                            faseAtual = 'semifinal';
-                        }
+                        // Verificar se a fase está completa e avançar
+                        verificarEAvancarFase(fase);
                         
-                        renderizarChaveamento();
+                        renderizarChaveamentoOficial();
                         atualizarStatus();
                         verificarFaseCompleta();
                         atualizarBotaoVoltarFase();
@@ -1751,7 +2127,252 @@
             });
         }
 
-        // VERIFICA SE FASE ESTÁ COMPLETA
+        // VERIFICA SE FASE ESTÁ COMPLETA E AVANÇA (OFICIAL FIFA)
+        function verificarEAvancarFase(faseAtualJogo) {
+            let faseCompleta = false;
+            let jogosFase = [];
+            
+            switch(faseAtual) {
+                case '32avos':
+                    jogosFase = chaveamentoOficial.r32;
+                    faseCompleta = jogosFase.every(j => j.vencedor);
+                    if (faseCompleta) avancarParaOitavas();
+                    break;
+                case '16avos':
+                    jogosFase = chaveamentoOficial.r16;
+                    faseCompleta = jogosFase.every(j => j.vencedor);
+                    if (faseCompleta) avancarParaQuartas();
+                    break;
+                case 'quartas':
+                    jogosFase = chaveamentoOficial.qf;
+                    faseCompleta = jogosFase.every(j => j.vencedor);
+                    if (faseCompleta) avancarParaSemifinais();
+                    break;
+                case 'semifinal':
+                    jogosFase = chaveamentoOficial.sf;
+                    faseCompleta = jogosFase.every(j => j.vencedor);
+                    if (faseCompleta) avancarParaFinal();
+                    break;
+            }
+        }
+
+        // AVANÇA PARA OITAVAS (SEGUINDO BRACKET OFICIAL)
+        function avancarParaOitavas() {
+            // Jogo 89: Vencedor 74 vs Vencedor 77
+            chaveamentoOficial.r16[0] = {
+                a: encontrarVencedorPorNumero(74),
+                b: encontrarVencedorPorNumero(77),
+                vencedor: null,
+                numero: 89
+            };
+            
+            // Jogo 90: Vencedor 73 vs Vencedor 75
+            chaveamentoOficial.r16[1] = {
+                a: encontrarVencedorPorNumero(73),
+                b: encontrarVencedorPorNumero(75),
+                vencedor: null,
+                numero: 90
+            };
+            
+            // Jogo 91: Vencedor 76 vs Vencedor 78
+            chaveamentoOficial.r16[2] = {
+                a: encontrarVencedorPorNumero(76),
+                b: encontrarVencedorPorNumero(78),
+                vencedor: null,
+                numero: 91
+            };
+            
+            // Jogo 92: Vencedor 79 vs Vencedor 80
+            chaveamentoOficial.r16[3] = {
+                a: encontrarVencedorPorNumero(79),
+                b: encontrarVencedorPorNumero(80),
+                vencedor: null,
+                numero: 92
+            };
+            
+            // Jogo 93: Vencedor 83 vs Vencedor 84
+            chaveamentoOficial.r16[4] = {
+                a: encontrarVencedorPorNumero(83),
+                b: encontrarVencedorPorNumero(84),
+                vencedor: null,
+                numero: 93
+            };
+            
+            // Jogo 94: Vencedor 81 vs Vencedor 82
+            chaveamentoOficial.r16[5] = {
+                a: encontrarVencedorPorNumero(81),
+                b: encontrarVencedorPorNumero(82),
+                vencedor: null,
+                numero: 94
+            };
+            
+            // Jogo 95: Vencedor 86 vs Vencedor 88
+            chaveamentoOficial.r16[6] = {
+                a: encontrarVencedorPorNumero(86),
+                b: encontrarVencedorPorNumero(88),
+                vencedor: null,
+                numero: 95
+            };
+            
+            // Jogo 96: Vencedor 85 vs Vencedor 87
+            chaveamentoOficial.r16[7] = {
+                a: encontrarVencedorPorNumero(85),
+                b: encontrarVencedorPorNumero(87),
+                vencedor: null,
+                numero: 96
+            };
+            
+            faseAtual = '16avos';
+        }
+
+        // AVANÇA PARA QUARTAS (SEGUINDO BRACKET OFICIAL)
+        function avancarParaQuartas() {
+            // Jogo 97: Vencedor 89 vs Vencedor 90
+            chaveamentoOficial.qf[0] = {
+                a: encontrarVencedorPorNumero(89),
+                b: encontrarVencedorPorNumero(90),
+                vencedor: null,
+                numero: 97
+            };
+            
+            // Jogo 98: Vencedor 93 vs Vencedor 94
+            chaveamentoOficial.qf[1] = {
+                a: encontrarVencedorPorNumero(93),
+                b: encontrarVencedorPorNumero(94),
+                vencedor: null,
+                numero: 98
+            };
+            
+            // Jogo 99: Vencedor 91 vs Vencedor 92
+            chaveamentoOficial.qf[2] = {
+                a: encontrarVencedorPorNumero(91),
+                b: encontrarVencedorPorNumero(92),
+                vencedor: null,
+                numero: 99
+            };
+            
+            // Jogo 100: Vencedor 95 vs Vencedor 96
+            chaveamentoOficial.qf[3] = {
+                a: encontrarVencedorPorNumero(95),
+                b: encontrarVencedorPorNumero(96),
+                vencedor: null,
+                numero: 100
+            };
+            
+            faseAtual = 'quartas';
+        }
+
+        // AVANÇA PARA SEMIFINAIS (SEGUINDO BRACKET OFICIAL)
+        function avancarParaSemifinais() {
+            // Jogo 101: Vencedor 97 vs Vencedor 98
+            chaveamentoOficial.sf[0] = {
+                a: encontrarVencedorPorNumero(97),
+                b: encontrarVencedorPorNumero(98),
+                vencedor: null,
+                numero: 101
+            };
+            
+            // Jogo 102: Vencedor 99 vs Vencedor 100
+            chaveamentoOficial.sf[1] = {
+                a: encontrarVencedorPorNumero(99),
+                b: encontrarVencedorPorNumero(100),
+                vencedor: null,
+                numero: 102
+            };
+            
+            faseAtual = 'semifinal';
+        }
+
+        // AVANÇA PARA FINAL (SEGUINDO BRACKET OFICIAL)
+        function avancarParaFinal() {
+            // Final: Vencedor 101 vs Vencedor 102
+            chaveamentoOficial.final[0] = {
+                a: encontrarVencedorPorNumero(101),
+                b: encontrarVencedorPorNumero(102),
+                vencedor: null,
+                numero: 104
+            };
+            
+            // 3º Lugar: Perdedor 101 vs Perdedor 102
+            const perdedor101 = encontrarPerdedorPorNumero(101);
+            const perdedor102 = encontrarPerdedorPorNumero(102);
+            
+            chaveamentoOficial.terceiro[0] = {
+                a: perdedor101,
+                b: perdedor102,
+                vencedor: null,
+                numero: 103
+            };
+            
+            faseAtual = 'final';
+        }
+
+        // Encontra vencedor pelo número do jogo
+        function encontrarVencedorPorNumero(numeroJogo) {
+            // Procurar em todas as rodadas
+            const todasRodadas = [...chaveamentoOficial.r32, ...chaveamentoOficial.r16, 
+                                 ...chaveamentoOficial.qf, ...chaveamentoOficial.sf];
+            
+            const jogo = todasRodadas.find(j => j.numero === numeroJogo);
+            return jogo ? jogo.vencedor : `Vencedor ${numeroJogo}`;
+        }
+
+        // Encontra perdedor pelo número do jogo
+        function encontrarPerdedorPorNumero(numeroJogo) {
+            const todasRodadas = [...chaveamentoOficial.r32, ...chaveamentoOficial.r16, 
+                                 ...chaveamentoOficial.qf, ...chaveamentoOficial.sf];
+            
+            const jogo = todasRodadas.find(j => j.numero === numeroJogo);
+            if (!jogo || !jogo.vencedor) return `Perdedor ${numeroJogo}`;
+            
+            return jogo.vencedor === jogo.a ? jogo.b : jogo.a;
+        }
+
+        // ====================================================================
+        // FUNÇÕES DE CONTROLE E UTILITÁRIAS
+        // ====================================================================
+
+        // SALVA ESTADO NO HISTÓRICO
+        function salvarEstadoFase() {
+            historicoFases.push({
+                fase: faseAtual,
+                chaveamento: JSON.parse(JSON.stringify(chaveamentoOficial)),
+                classificados: JSON.parse(JSON.stringify(classificados)),
+                melhoresTerceirosOrdenados: [...melhoresTerceirosOrdenados]
+            });
+            
+            if (historicoFases.length > 10) {
+                historicoFases.shift();
+            }
+        }
+
+        // VOLTA FASE ANTERIOR
+        function voltarFaseAnterior() {
+            if (historicoFases.length === 0) return;
+            
+            const estadoAnterior = historicoFases.pop();
+            
+            chaveamentoOficial = JSON.parse(JSON.stringify(estadoAnterior.chaveamento));
+            faseAtual = estadoAnterior.fase;
+            classificados = JSON.parse(JSON.stringify(estadoAnterior.classificados));
+            
+            if (estadoAnterior.melhoresTerceirosOrdenados) {
+                melhoresTerceirosOrdenados = [...estadoAnterior.melhoresTerceirosOrdenados];
+            }
+            
+            renderizarChaveamentoOficial();
+            atualizarStatus();
+            verificarFaseCompleta();
+            atualizarBotaoVoltarFase();
+        }
+
+        // ATUALIZA BOTÃO VOLTAR FASE
+        function atualizarBotaoVoltarFase() {
+            const backButton = document.getElementById('back-phase-fixed');
+            backButton.classList.toggle('active', faseAtual !== '32avos' && historicoFases.length > 0);
+        }
+
+        // VERIFICA SE FASE ESTÁ COMPLETA (para mostrar controle)
         function verificarFaseCompleta() {
             const control = document.getElementById('phase-control-above');
             
@@ -1761,27 +2382,27 @@
             
             switch(faseAtual) {
                 case '32avos':
-                    faseCompleta = chaveamento.r32.every(c => c.vencedor);
+                    faseCompleta = chaveamentoOficial.r32.every(j => j.vencedor);
                     proximaFase = '16avos';
                     textoFase = '16-avos de Final';
                     break;
                 case '16avos':
-                    faseCompleta = chaveamento.r16.every(c => c.vencedor);
+                    faseCompleta = chaveamentoOficial.r16.every(j => j.vencedor);
                     proximaFase = 'quartas';
                     textoFase = 'Oitavas de Final';
                     break;
                 case 'quartas':
-                    faseCompleta = chaveamento.qf.every(c => c.vencedor);
+                    faseCompleta = chaveamentoOficial.qf.every(j => j.vencedor);
                     proximaFase = 'semifinal';
                     textoFase = 'Quartas de Final';
                     break;
                 case 'semifinal':
-                    faseCompleta = chaveamento.sf.every(c => c.vencedor);
+                    faseCompleta = chaveamentoOficial.sf.every(j => j.vencedor);
                     proximaFase = 'final';
                     textoFase = 'Semifinais';
                     break;
                 case 'final':
-                    faseCompleta = chaveamento.final.length > 0 && chaveamento.final[0].vencedor;
+                    faseCompleta = chaveamentoOficial.final[0].vencedor;
                     proximaFase = 'completo';
                     textoFase = 'Final';
                     break;
@@ -1804,7 +2425,9 @@
                 
                 document.getElementById('btn-avancar-fase').addEventListener('click', () => {
                     salvarEstadoFase();
-                    avancarParaProximaFase(proximaFase);
+                    verificarEAvancarFase(faseAtual);
+                    renderizarChaveamentoOficial();
+                    control.classList.remove('active');
                 });
                 
                 const btnVoltar = document.getElementById('btn-voltar-fase');
@@ -1812,9 +2435,10 @@
                     btnVoltar.addEventListener('click', voltarFaseAnterior);
                 }
             } else if (proximaFase === 'completo' && faseCompleta) {
+                const campeao = chaveamentoOficial.final[0].vencedor;
                 control.innerHTML = `
                     <h3>🏆 Copa do Mundo 2026 Concluída!</h3>
-                    <p>O campeão é <strong>${chaveamento.final[0].vencedor}</strong>!</p>
+                    <p>O campeão é <strong>${campeao}</strong> ${flags[campeao] || '🏆'}!</p>
                     <div class="phase-control-buttons">
                         <button class="btn-phase" id="btn-nova-simulacao2">
                             <i class="fas fa-redo"></i> Iniciar Nova Simulação
@@ -1834,81 +2458,6 @@
             }
         }
 
-        // AVANÇA PARA PRÓXIMA FASE
-        function avancarParaProximaFase(proximaFase) {
-            switch(faseAtual) {
-                case '32avos':
-                    for (let i = 0; i < 16; i += 2) {
-                        if (chaveamento.r32[i] && chaveamento.r32[i+1]) {
-                            chaveamento.r16.push({
-                                a: chaveamento.r32[i].vencedor,
-                                b: chaveamento.r32[i+1].vencedor,
-                                vencedor: null
-                            });
-                        }
-                    }
-                    faseAtual = '16avos';
-                    break;
-                    
-                case '16avos':
-                    for (let i = 0; i < 8; i += 2) {
-                        if (chaveamento.r16[i] && chaveamento.r16[i+1]) {
-                            chaveamento.qf.push({
-                                a: chaveamento.r16[i].vencedor,
-                                b: chaveamento.r16[i+1].vencedor,
-                                vencedor: null
-                            });
-                        }
-                    }
-                    faseAtual = 'quartas';
-                    break;
-                    
-                case 'quartas':
-                    for (let i = 0; i < 4; i += 2) {
-                        if (chaveamento.qf[i] && chaveamento.qf[i+1]) {
-                            chaveamento.sf.push({
-                                a: chaveamento.qf[i].vencedor,
-                                b: chaveamento.qf[i+1].vencedor,
-                                vencedor: null
-                            });
-                        }
-                    }
-                    faseAtual = 'semifinal';
-                    break;
-                    
-                case 'semifinal':
-                    if (chaveamento.sf[0] && chaveamento.sf[1]) {
-                        chaveamento.final = [{
-                            a: chaveamento.sf[0].vencedor,
-                            b: chaveamento.sf[1].vencedor,
-                            vencedor: null
-                        }];
-                        
-                        chaveamento.terceiro = [{
-                            a: chaveamento.sf[0].vencedor === chaveamento.final[0].a ? 
-                               chaveamento.sf[0].b : chaveamento.sf[0].a,
-                            b: chaveamento.sf[1].vencedor === chaveamento.final[0].b ?
-                               chaveamento.sf[1].b : chaveamento.sf[1].a,
-                            vencedor: null
-                        }];
-                    }
-                    faseAtual = 'final';
-                    break;
-            }
-            
-            renderizarChaveamento();
-            atualizarStatus();
-            verificarFaseCompleta();
-            atualizarBotaoVoltarFase();
-            document.getElementById('phase-control-above').classList.remove('active');
-        }
-
-        // ATUALIZA BOTÃO VOLTAR FASE
-        function atualizarBotaoVoltarFase() {
-            const backButton = document.getElementById('back-phase-fixed');
-            backButton.classList.toggle('active', faseAtual !== '32avos' && historicoFases.length > 0);
-        }
-
         // ATUALIZA BARRA DE STATUS
         function atualizarStatus() {
             const statusGrupos = document.getElementById('status-grupos');
@@ -1921,7 +2470,7 @@
             statusGrupos.className = 'status-icon active';
             statusTextGrupos.textContent = 'Definida pelo usuário';
             
-            if (chaveamento.r32.length > 0) {
+            if (chaveamentoOficial.r32[0].a) {
                 statusMata.className = 'status-icon active';
                 
                 let faseTexto = '';
@@ -1949,21 +2498,35 @@
             grupoOrdenado = JSON.parse(JSON.stringify(gruposData));
             classificados = { primeiros: [], segundos: [], terceiros: [] };
             todosTerceirosDisponiveis = [];
-            terceirosSelecionados = [];
-            chaveamento = { r32: [], r16: [], qf: [], sf: [], final: [], terceiro: [] };
+            melhoresTerceirosOrdenados = [];
+            
+            // Resetar chaveamento oficial
+            chaveamentoOficial.r32 = Array(16).fill(null).map((_, i) => ({ 
+                a: null, b: null, vencedor: null, numero: 73 + i 
+            }));
+            chaveamentoOficial.r16 = Array(8).fill(null).map((_, i) => ({ 
+                a: null, b: null, vencedor: null, numero: 89 + i 
+            }));
+            chaveamentoOficial.qf = Array(4).fill(null).map((_, i) => ({ 
+                a: null, b: null, vencedor: null, numero: 97 + i 
+            }));
+            chaveamentoOficial.sf = Array(2).fill(null).map((_, i) => ({ 
+                a: null, b: null, vencedor: null, numero: 101 + i 
+            }));
+            chaveamentoOficial.final[0] = { a: null, b: null, vencedor: null, numero: 104 };
+            chaveamentoOficial.terceiro[0] = { a: null, b: null, vencedor: null, numero: 103 };
+            
             faseAtual = '32avos';
             todasFasesCompletas = false;
             historicoFases = [];
             
             renderizarGrupos();
-            renderizarChaveamento();
+            renderizarChaveamentoOficial();
             atualizarStatus();
             
             document.getElementById('bracket-section').style.display = 'none';
             document.getElementById('phase-control-above').classList.remove('active');
             document.getElementById('back-phase-fixed').classList.remove('active');
-            
-            document.getElementById('btn-montar-chaveamento').innerHTML = '<i class="fas fa-sitemap"></i> Montar Chaveamento (32 times)';
         }
 
         // CONFIGURA EVENTOS DOS BOTÕES
