@@ -554,7 +554,44 @@
             color: var(--accent);
         }
         
-        /* CONTROLE DE FASES */
+        /* CONTROLE DE FASES E INDICADOR DE FASE */
+        .phase-indicator {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: var(--radius);
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            display: none;
+            border-left: 8px solid var(--accent);
+        }
+        
+        .phase-indicator.active {
+            display: block;
+            animation: slideDown 0.5s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .phase-indicator h3 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .phase-indicator p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
+        
         .phase-control-above {
             background: linear-gradient(135deg, #ffffff, #f8f9fa);
             border-radius: var(--radius);
@@ -643,6 +680,11 @@
             box-shadow: var(--shadow);
             margin-top: 20px;
             display: none;
+        }
+        
+        .bracket-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
         }
         
         .bracket-section h2 {
@@ -859,7 +901,7 @@
         
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateY(0); }
+            to { opacity: 1; transform: translateX(0); }
         }
         
         /* STATUS BAR */
@@ -1050,6 +1092,14 @@
                 display: flex;
                 justify-content: center;
             }
+            
+            .phase-indicator {
+                padding: 15px 20px;
+            }
+            
+            .phase-indicator h3 {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -1171,6 +1221,12 @@
                     </button>
                 </div>
             </div>
+        </div>
+        
+        <!-- INDICADOR DE FASE ATUAL -->
+        <div class="phase-indicator" id="phase-indicator">
+            <h3><i class="fas fa-arrow-pointer"></i> <span id="current-phase-text">Selecionando vencedores</span></h3>
+            <p id="phase-instruction">Clique em um time para definir o vencedor do confronto</p>
         </div>
         
         <!-- CONTROLE DE FASES (ACIMA DO CHAVEAMENTO) -->
@@ -1883,14 +1939,15 @@
                 numero: 88
             };
             
-            // Salvar estado inicial
-            salvarEstadoFase();
+            // Ativar indicador de fase
+            faseAtual = '32avos';
+            atualizarIndicadorFase();
+            document.getElementById('phase-indicator').classList.add('active');
+            document.getElementById('bracket-section').classList.add('active');
             
             // Renderizar e mostrar
             renderizarChaveamentoOficial();
-            document.getElementById('bracket-section').style.display = 'block';
             
-            faseAtual = '32avos';
             todasFasesCompletas = false;
             atualizarStatus();
             verificarFaseCompleta();
@@ -2100,6 +2157,7 @@
                     const [fase, index] = matchData.split('-');
                     const matchIdx = parseInt(index);
                     
+                    // Salvar estado atual antes de modificar
                     salvarEstadoFase();
                     
                     let confronto;
@@ -2122,6 +2180,7 @@
                         atualizarStatus();
                         verificarFaseCompleta();
                         atualizarBotaoVoltarFase();
+                        atualizarIndicadorFase();
                     }
                 });
             });
@@ -2223,6 +2282,7 @@
             };
             
             faseAtual = '16avos';
+            atualizarIndicadorFase();
         }
 
         // AVANÇA PARA QUARTAS (SEGUINDO BRACKET OFICIAL)
@@ -2260,6 +2320,7 @@
             };
             
             faseAtual = 'quartas';
+            atualizarIndicadorFase();
         }
 
         // AVANÇA PARA SEMIFINAIS (SEGUINDO BRACKET OFICIAL)
@@ -2281,6 +2342,7 @@
             };
             
             faseAtual = 'semifinal';
+            atualizarIndicadorFase();
         }
 
         // AVANÇA PARA FINAL (SEGUINDO BRACKET OFICIAL)
@@ -2305,6 +2367,7 @@
             };
             
             faseAtual = 'final';
+            atualizarIndicadorFase();
         }
 
         // Encontra vencedor pelo número do jogo
@@ -2332,6 +2395,41 @@
         // FUNÇÕES DE CONTROLE E UTILITÁRIAS
         // ====================================================================
 
+        // ATUALIZA INDICADOR DE FASE
+        function atualizarIndicadorFase() {
+            const indicatorText = document.getElementById('current-phase-text');
+            const instructionText = document.getElementById('phase-instruction');
+            
+            let faseTexto = '';
+            let instrucaoTexto = '';
+            
+            switch(faseAtual) {
+                case '32avos':
+                    faseTexto = 'Selecionando vencedores dos 16-avos de final';
+                    instrucaoTexto = 'Clique em um time para definir o vencedor de cada confronto';
+                    break;
+                case '16avos':
+                    faseTexto = 'Selecionando vencedores das oitavas de final';
+                    instrucaoTexto = 'Clique em um time para definir o vencedor de cada confronto';
+                    break;
+                case 'quartas':
+                    faseTexto = 'Selecionando vencedores das quartas de final';
+                    instrucaoTexto = 'Clique em um time para definir o vencedor de cada confronto';
+                    break;
+                case 'semifinal':
+                    faseTexto = 'Selecionando vencedores das semifinais';
+                    instrucaoTexto = 'Clique em um time para definir o vencedor de cada confronto';
+                    break;
+                case 'final':
+                    faseTexto = 'Selecionando vencedor da final e do 3º lugar';
+                    instrucaoTexto = 'Clique para definir o campeão e o 3º colocado';
+                    break;
+            }
+            
+            indicatorText.textContent = faseTexto;
+            instructionText.textContent = instrucaoTexto;
+        }
+
         // SALVA ESTADO NO HISTÓRICO
         function salvarEstadoFase() {
             historicoFases.push({
@@ -2346,30 +2444,103 @@
             }
         }
 
-        // VOLTA FASE ANTERIOR
-        function voltarFaseAnterior() {
-            if (historicoFases.length === 0) return;
+        // LIMPA FASES POSTERIORES À FASE ATUAL
+        function limparFasesPosteriores(fase) {
+            const ordemFases = ['32avos', '16avos', 'quartas', 'semifinal', 'final'];
+            const indiceFase = ordemFases.indexOf(fase);
             
-            const estadoAnterior = historicoFases.pop();
+            // Limpar todas as fases após a fase atual
+            for (let i = indiceFase + 1; i < ordemFases.length; i++) {
+                const fasePosterior = ordemFases[i];
+                
+                switch(fasePosterior) {
+                    case '16avos':
+                        chaveamentoOficial.r16.forEach(jogo => {
+                            jogo.a = null;
+                            jogo.b = null;
+                            jogo.vencedor = null;
+                        });
+                        break;
+                    case 'quartas':
+                        chaveamentoOficial.qf.forEach(jogo => {
+                            jogo.a = null;
+                            jogo.b = null;
+                            jogo.vencedor = null;
+                        });
+                        break;
+                    case 'semifinal':
+                        chaveamentoOficial.sf.forEach(jogo => {
+                            jogo.a = null;
+                            jogo.b = null;
+                            jogo.vencedor = null;
+                        });
+                        break;
+                    case 'final':
+                        chaveamentoOficial.final[0].a = null;
+                        chaveamentoOficial.final[0].b = null;
+                        chaveamentoOficial.final[0].vencedor = null;
+                        chaveamentoOficial.terceiro[0].a = null;
+                        chaveamentoOficial.terceiro[0].b = null;
+                        chaveamentoOficial.terceiro[0].vencedor = null;
+                        break;
+                }
+            }
+        }
+
+        // VOLTA PARA A FASE ANTERIOR E LIMPA FASES POSTERIORES
+        function voltarParaFaseAnterior() {
+            const ordemFases = ['32avos', '16avos', 'quartas', 'semifinal', 'final'];
+            const indiceAtual = ordemFases.indexOf(faseAtual);
             
-            chaveamentoOficial = JSON.parse(JSON.stringify(estadoAnterior.chaveamento));
-            faseAtual = estadoAnterior.fase;
-            classificados = JSON.parse(JSON.stringify(estadoAnterior.classificados));
+            // Se já está na primeira fase, não faz nada
+            if (indiceAtual <= 0) return;
             
-            if (estadoAnterior.melhoresTerceirosOrdenados) {
-                melhoresTerceirosOrdenados = [...estadoAnterior.melhoresTerceirosOrdenados];
+            // Limpa todas as fases a partir da fase atual
+            limparFasesPosteriores(ordemFases[indiceAtual - 1]);
+            
+            // Define a fase anterior como atual
+            faseAtual = ordemFases[indiceAtual - 1];
+            
+            // Remove todos os vencedores da fase atual (para permitir nova seleção)
+            switch(faseAtual) {
+                case '32avos':
+                    chaveamentoOficial.r32.forEach(jogo => {
+                        jogo.vencedor = null;
+                    });
+                    break;
+                case '16avos':
+                    chaveamentoOficial.r16.forEach(jogo => {
+                        if (jogo.a) jogo.vencedor = null;
+                    });
+                    break;
+                case 'quartas':
+                    chaveamentoOficial.qf.forEach(jogo => {
+                        if (jogo.a) jogo.vencedor = null;
+                    });
+                    break;
+                case 'semifinal':
+                    chaveamentoOficial.sf.forEach(jogo => {
+                        if (jogo.a) jogo.vencedor = null;
+                    });
+                    break;
             }
             
+            // Limpa o histórico (não queremos voltar mais de uma fase de uma vez)
+            historicoFases = [];
+            
+            // Atualiza a interface
             renderizarChaveamentoOficial();
             atualizarStatus();
             verificarFaseCompleta();
             atualizarBotaoVoltarFase();
+            atualizarIndicadorFase();
         }
 
         // ATUALIZA BOTÃO VOLTAR FASE
         function atualizarBotaoVoltarFase() {
             const backButton = document.getElementById('back-phase-fixed');
-            backButton.classList.toggle('active', faseAtual !== '32avos' && historicoFases.length > 0);
+            // Mostrar botão se não estiver na fase de 32-avos (primeira fase do mata-mata)
+            backButton.classList.toggle('active', faseAtual !== '32avos');
         }
 
         // VERIFICA SE FASE ESTÁ COMPLETA (para mostrar controle)
@@ -2402,7 +2573,7 @@
                     textoFase = 'Semifinais';
                     break;
                 case 'final':
-                    faseCompleta = chaveamentoOficial.final[0].vencedor;
+                    faseCompleta = chaveamentoOficial.final[0].vencedor && chaveamentoOficial.terceiro[0].vencedor;
                     proximaFase = 'completo';
                     textoFase = 'Final';
                     break;
@@ -2416,9 +2587,9 @@
                         <button class="btn-phase" id="btn-avancar-fase">
                             <i class="fas fa-arrow-right"></i> Avançar para ${proximaFase === '16avos' ? 'Oitavas' : proximaFase === 'quartas' ? 'Quartas' : proximaFase === 'semifinal' ? 'Semifinais' : 'Final'}
                         </button>
-                        ${faseAtual !== '32avos' ? `<button class="btn-back" id="btn-voltar-fase">
+                        <button class="btn-back" id="btn-voltar-fase">
                             <i class="fas fa-undo"></i> Voltar para ${faseAtual === '16avos' ? '16-avos' : faseAtual === 'quartas' ? 'Oitavas' : faseAtual === 'semifinal' ? 'Quartas' : 'Semifinais'}
-                        </button>` : ''}
+                        </button>
                     </div>
                 `;
                 control.classList.add('active');
@@ -2428,17 +2599,17 @@
                     verificarEAvancarFase(faseAtual);
                     renderizarChaveamentoOficial();
                     control.classList.remove('active');
+                    atualizarIndicadorFase();
                 });
                 
-                const btnVoltar = document.getElementById('btn-voltar-fase');
-                if (btnVoltar) {
-                    btnVoltar.addEventListener('click', voltarFaseAnterior);
-                }
+                document.getElementById('btn-voltar-fase').addEventListener('click', voltarParaFaseAnterior);
             } else if (proximaFase === 'completo' && faseCompleta) {
                 const campeao = chaveamentoOficial.final[0].vencedor;
+                const terceiro = chaveamentoOficial.terceiro[0].vencedor;
                 control.innerHTML = `
                     <h3>🏆 Copa do Mundo 2026 Concluída!</h3>
-                    <p>O campeão é <strong>${campeao}</strong> ${flags[campeao] || '🏆'}!</p>
+                    <p>Campeão: <strong>${campeao}</strong> ${flags[campeao] || '🏆'}</p>
+                    <p>3º Lugar: <strong>${terceiro}</strong> ${flags[terceiro] || '🥉'}</p>
                     <div class="phase-control-buttons">
                         <button class="btn-phase" id="btn-nova-simulacao2">
                             <i class="fas fa-redo"></i> Iniciar Nova Simulação
@@ -2452,7 +2623,7 @@
                 todasFasesCompletas = true;
                 
                 document.getElementById('btn-nova-simulacao2').addEventListener('click', novaSimulacao);
-                document.getElementById('btn-voltar-final').addEventListener('click', voltarFaseAnterior);
+                document.getElementById('btn-voltar-final').addEventListener('click', voltarParaFaseAnterior);
             } else {
                 control.classList.remove('active');
             }
@@ -2524,7 +2695,9 @@
             renderizarChaveamentoOficial();
             atualizarStatus();
             
-            document.getElementById('bracket-section').style.display = 'none';
+            // Esconder elementos do mata-mata
+            document.getElementById('bracket-section').classList.remove('active');
+            document.getElementById('phase-indicator').classList.remove('active');
             document.getElementById('phase-control-above').classList.remove('active');
             document.getElementById('back-phase-fixed').classList.remove('active');
         }
@@ -2545,7 +2718,7 @@
             document.getElementById('btn-nova-simulacao').addEventListener('click', novaSimulacao);
             
             // Botão fixo para voltar fase
-            document.getElementById('btn-voltar-fase-fixo').addEventListener('click', voltarFaseAnterior);
+            document.getElementById('btn-voltar-fase-fixo').addEventListener('click', voltarParaFaseAnterior);
             
             // Botões do modal
             document.getElementById('btn-confirmar-terceiros').addEventListener('click', confirmarSelecaoTerceiros);
