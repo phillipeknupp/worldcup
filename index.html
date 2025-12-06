@@ -11,6 +11,7 @@
             --secondary: #26d0ce;
             --accent: #ff4757;
             --success: #2ed573;
+            --warning: #ffa502;
             --light: #f1f2f6;
             --dark: #2f3542;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -42,7 +43,7 @@
             background: rgba(255, 255, 255, 0.98);
             border-radius: var(--radius);
             padding: 30px 40px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             box-shadow: var(--shadow);
             text-align: center;
             border-bottom: 5px solid var(--accent);
@@ -139,10 +140,49 @@
             box-shadow: 0 8px 20px rgba(255, 71, 87, 0.3);
         }
         
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ff7f00);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 165, 2, 0.3);
+        }
+        
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
+        }
+        
+        /* INSTRUÇÕES NO TOPO */
+        .instructions-top {
+            background: linear-gradient(135deg, #fff8e1, #fff);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #ffd32a;
+            box-shadow: var(--shadow);
+        }
+        
+        .instructions-top h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+        }
+        
+        .instructions-top ol {
+            padding-left: 25px;
+            line-height: 1.8;
+        }
+        
+        .instructions-top li {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
         }
         
         /* SEÇÃO DOS GRUPOS */
@@ -298,6 +338,7 @@
             padding: 30px;
             box-shadow: var(--shadow);
             margin-top: 20px;
+            display: none;
         }
         
         .bracket-section h2 {
@@ -498,7 +539,7 @@
             z-index: 2;
         }
         
-        /* BOTÃO DE AVANÇAR FASE */
+        /* CONTROLE DE FASES */
         .phase-control {
             text-align: center;
             margin-top: 40px;
@@ -531,6 +572,13 @@
             font-size: 1.1rem;
         }
         
+        .phase-control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
         .btn-phase {
             padding: 18px 40px;
             font-size: 1.2rem;
@@ -549,6 +597,26 @@
         .btn-phase:hover {
             transform: translateY(-5px) scale(1.05);
             box-shadow: 0 12px 30px rgba(46, 213, 115, 0.4);
+        }
+        
+        .btn-back {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--warning), #ff7f00);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(255, 165, 2, 0.3);
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 165, 2, 0.4);
         }
         
         /* STATUS BAR */
@@ -598,34 +666,6 @@
             font-size: 1.1rem;
         }
         
-        /* INSTRUÇÕES */
-        .instructions {
-            background: linear-gradient(135deg, #fff8e1, #fff);
-            border-radius: var(--radius);
-            padding: 25px;
-            margin-top: 30px;
-            border-left: 5px solid #ffd32a;
-        }
-        
-        .instructions h3 {
-            color: var(--dark);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.4rem;
-        }
-        
-        .instructions ol {
-            padding-left: 25px;
-            line-height: 1.8;
-        }
-        
-        .instructions li {
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-        }
-        
         /* FOOTER */
         footer {
             text-align: center;
@@ -634,6 +674,25 @@
             font-size: 1rem;
             padding: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* BOTÃO DE VOLTAR FASE FIXO */
+        .back-phase-fixed {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .back-phase-fixed.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
         }
         
         /* RESPONSIVIDADE */
@@ -651,6 +710,11 @@
             
             .round-column.left, .round-column.right, .round-column.center {
                 align-items: center;
+            }
+            
+            .back-phase-fixed {
+                bottom: 20px;
+                right: 20px;
             }
         }
         
@@ -680,6 +744,21 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+            
+            .phase-control-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-phase, .btn-back {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .back-phase-fixed {
+                position: static;
+                margin-top: 20px;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -702,6 +781,19 @@
             </div>
         </header>
         
+        <!-- INSTRUÇÕES NO TOPO -->
+        <div class="instructions-top">
+            <h3><i class="fas fa-info-circle"></i> Como usar o simulador:</h3>
+            <ol>
+                <li><strong>Arraste os times</strong> em cada grupo para definir a classificação (1º a 4º lugar)</li>
+                <li>Clique em <strong>"Montar Chaveamento"</strong> para organizar os confrontos da fase final</li>
+                <li><strong>Clique nos times</strong> em cada confronto para definir os vencedores</li>
+                <li>Após definir todos os vencedores de uma fase, <strong>clique no botão que aparecerá</strong> para avançar para a próxima fase</li>
+                <li>Use o <strong>botão "Voltar Fase"</strong> para retornar a fases anteriores e fazer modificações</li>
+                <li>Continue até chegar à final e definir o campeão</li>
+            </ol>
+        </div>
+        
         <section class="groups-section">
             <h2><i class="fas fa-list-ol"></i> Fase de Grupos</h2>
             <p class="drag-info"><i class="fas fa-arrows-alt"></i> Arraste os times para definir a classificação (1º a 4º lugar)</p>
@@ -711,7 +803,7 @@
             </div>
         </section>
         
-        <section class="bracket-section" id="bracket-section" style="display: none;">
+        <section class="bracket-section" id="bracket-section">
             <h2><i class="fas fa-trophy"></i> Chaveamento - Fase Final</h2>
             
             <div class="bracket-container">
@@ -782,15 +874,11 @@
             <!-- Conteúdo será inserido dinamicamente -->
         </div>
         
-        <div class="instructions">
-            <h3><i class="fas fa-info-circle"></i> Como usar o simulador:</h3>
-            <ol>
-                <li><strong>Arraste os times</strong> em cada grupo para definir a classificação (1º a 4º lugar)</li>
-                <li>Clique em <strong>"Montar Chaveamento"</strong> para organizar os confrontos da fase final</li>
-                <li><strong>Clique nos times</strong> em cada confronto para definir os vencedores</li>
-                <li>Após definir todos os vencedores de uma fase, <strong>clique no botão que aparecerá</strong> para avançar para a próxima fase</li>
-                <li>Continue até chegar à final e definir o campeão</li>
-            </ol>
+        <!-- BOTÃO FIXO PARA VOLTAR FASE -->
+        <div class="back-phase-fixed" id="back-phase-fixed">
+            <button class="btn btn-warning" id="btn-voltar-fase-fixo">
+                <i class="fas fa-undo"></i> Voltar Fase
+            </button>
         </div>
         
         <div class="status-bar">
@@ -860,6 +948,7 @@
         
         let faseAtual = 'oitavas'; // oitavas, quartas, semifinal, final
         let todasFasesCompletas = false;
+        let historicoFases = []; // Para armazenar o histórico das fases
 
         // Inicializa a página
         document.addEventListener('DOMContentLoaded', function() {
@@ -1000,6 +1089,19 @@
             return classificados;
         }
 
+        // Salva o estado atual da fase no histórico
+        function salvarEstadoFase() {
+            historicoFases.push({
+                fase: faseAtual,
+                chaveamento: JSON.parse(JSON.stringify(chaveamento))
+            });
+            
+            // Mantém apenas os últimos 10 estados no histórico
+            if (historicoFases.length > 10) {
+                historicoFases.shift();
+            }
+        }
+
         // Monta o chaveamento inicial (apenas organiza os confrontos)
         function montarChaveamento() {
             // Primeiro calcula os classificados
@@ -1012,6 +1114,9 @@
                 semisEsquerda: [], semisDireita: [],
                 final: [], terceiro: []
             };
+            
+            // Limpa o histórico
+            historicoFases = [];
             
             // Define os confrontos da rodada de 32 conforme formato oficial
             const confrontosR32 = [
@@ -1047,6 +1152,9 @@
                 vencedor: null // Sem vencedor inicial
             }));
             
+            // Salva o estado inicial no histórico
+            salvarEstadoFase();
+            
             // Mostra a seção do chaveamento
             document.getElementById('bracket-section').style.display = 'block';
             
@@ -1058,6 +1166,9 @@
             todasFasesCompletas = false;
             atualizarStatus();
             verificarFaseCompleta();
+            
+            // Atualiza visibilidade do botão de voltar fase
+            atualizarBotaoVoltarFase();
             
             // Scroll para o chaveamento
             document.getElementById('bracket-section').scrollIntoView({ behavior: 'smooth' });
@@ -1177,6 +1288,9 @@
                     const [fase, index] = matchData.split('-');
                     const matchIdx = parseInt(index);
                     
+                    // Salva o estado atual antes de fazer mudanças
+                    salvarEstadoFase();
+                    
                     // Encontra o confronto correspondente
                     let confronto;
                     switch(fase) {
@@ -1194,13 +1308,92 @@
                         // Define o vencedor
                         confronto.vencedor = teamSide === 'a' ? confronto.a : confronto.b;
                         
+                        // Se estiver em uma fase anterior e mudar um vencedor, limpa fases posteriores
+                        if (fase.includes('oitavas')) {
+                            // Se mudou uma oitava, limpa quartas, semifinais e final
+                            chaveamento.quartasEsquerda = [];
+                            chaveamento.quartasDireita = [];
+                            chaveamento.semisEsquerda = [];
+                            chaveamento.semisDireita = [];
+                            chaveamento.final = [];
+                            chaveamento.terceiro = [];
+                            faseAtual = 'oitavas';
+                        } else if (fase.includes('quartas')) {
+                            // Se mudou uma quarta, limpa semifinais e final
+                            chaveamento.semisEsquerda = [];
+                            chaveamento.semisDireita = [];
+                            chaveamento.final = [];
+                            chaveamento.terceiro = [];
+                            faseAtual = 'quartas';
+                        } else if (fase.includes('semis')) {
+                            // Se mudou uma semi, limpa final
+                            chaveamento.final = [];
+                            chaveamento.terceiro = [];
+                            faseAtual = 'semifinal';
+                        }
+                        
                         // Re-renderiza o chaveamento
                         renderizarChaveamento();
                         atualizarStatus();
                         verificarFaseCompleta();
+                        
+                        // Atualiza visibilidade do botão de voltar fase
+                        atualizarBotaoVoltarFase();
                     }
                 });
             });
+        }
+
+        // Atualiza a visibilidade do botão de voltar fase
+        function atualizarBotaoVoltarFase() {
+            const backButton = document.getElementById('back-phase-fixed');
+            
+            // Mostra o botão se não estiver na fase inicial (oitavas) e se houver histórico
+            if (faseAtual !== 'oitavas' && historicoFases.length > 0) {
+                backButton.classList.add('active');
+            } else {
+                backButton.classList.remove('active');
+            }
+        }
+
+        // Volta para a fase anterior
+        function voltarFaseAnterior() {
+            if (historicoFases.length === 0) return;
+            
+            // Remove o estado atual do histórico
+            historicoFases.pop();
+            
+            // Pega o último estado salvo (se houver)
+            if (historicoFases.length > 0) {
+                const estadoAnterior = historicoFases[historicoFases.length - 1];
+                
+                // Restaura o estado anterior
+                chaveamento = JSON.parse(JSON.stringify(estadoAnterior.chaveamento));
+                faseAtual = estadoAnterior.fase;
+                
+                // Remove o estado restaurado do histórico para evitar loops
+                historicoFases.pop();
+                
+                // Renderiza o chaveamento restaurado
+                renderizarChaveamento();
+                atualizarStatus();
+                verificarFaseCompleta();
+                atualizarBotaoVoltarFase();
+            } else {
+                // Se não houver histórico, volta para o início
+                faseAtual = 'oitavas';
+                chaveamento.quartasEsquerda = [];
+                chaveamento.quartasDireita = [];
+                chaveamento.semisEsquerda = [];
+                chaveamento.semisDireita = [];
+                chaveamento.final = [];
+                chaveamento.terceiro = [];
+                
+                renderizarChaveamento();
+                atualizarStatus();
+                verificarFaseCompleta();
+                atualizarBotaoVoltarFase();
+            }
         }
 
         // Verifica se todos os confrontos de uma fase estão completos
@@ -1246,31 +1439,50 @@
                 control.innerHTML = `
                     <h3>${textoFase} Concluída!</h3>
                     <p>Todos os confrontos da ${textoFase.toLowerCase()} foram definidos.</p>
-                    <button class="btn-phase" id="btn-avancar-fase">
-                        <i class="fas fa-arrow-right"></i> Avançar para ${proximaFase === 'quartas' ? 'Quartas de Final' : proximaFase === 'semifinal' ? 'Semifinais' : 'Final'}
-                    </button>
+                    <div class="phase-control-buttons">
+                        <button class="btn-phase" id="btn-avancar-fase">
+                            <i class="fas fa-arrow-right"></i> Avançar para ${proximaFase === 'quartas' ? 'Quartas de Final' : proximaFase === 'semifinal' ? 'Semifinais' : 'Final'}
+                        </button>
+                        ${faseAtual !== 'oitavas' ? `<button class="btn-back" id="btn-voltar-fase">
+                            <i class="fas fa-undo"></i> Voltar para ${faseAtual === 'quartas' ? 'Oitavas' : faseAtual === 'semifinal' ? 'Quartas' : 'Semifinais'}
+                        </button>` : ''}
+                    </div>
                 `;
                 control.classList.add('active');
                 
-                // Configura evento do botão
+                // Configura evento do botão avançar
                 document.getElementById('btn-avancar-fase').addEventListener('click', function() {
+                    salvarEstadoFase(); // Salva antes de avançar
                     avancarParaProximaFase(proximaFase);
                 });
+                
+                // Configura evento do botão voltar (se existir)
+                const btnVoltar = document.getElementById('btn-voltar-fase');
+                if (btnVoltar) {
+                    btnVoltar.addEventListener('click', voltarFaseAnterior);
+                }
             } else if (proximaFase === 'completo' && faseCompleta) {
                 control.innerHTML = `
                     <h3>🏆 Copa do Mundo 2026 Concluída!</h3>
                     <p>O campeão é <strong>${chaveamento.final[0].vencedor}</strong>!</p>
-                    <button class="btn-phase" id="btn-nova-simulacao2">
-                        <i class="fas fa-redo"></i> Iniciar Nova Simulação
-                    </button>
+                    <div class="phase-control-buttons">
+                        <button class="btn-phase" id="btn-nova-simulacao2">
+                            <i class="fas fa-redo"></i> Iniciar Nova Simulação
+                        </button>
+                        <button class="btn-back" id="btn-voltar-final">
+                            <i class="fas fa-undo"></i> Voltar para Semifinais
+                        </button>
+                    </div>
                 `;
                 control.classList.add('active');
                 todasFasesCompletas = true;
                 
-                // Configura evento do botão
+                // Configura eventos dos botões
                 document.getElementById('btn-nova-simulacao2').addEventListener('click', function() {
                     novaSimulacao();
                 });
+                
+                document.getElementById('btn-voltar-final').addEventListener('click', voltarFaseAnterior);
             } else {
                 control.classList.remove('active');
             }
@@ -1328,6 +1540,7 @@
             renderizarChaveamento();
             atualizarStatus();
             verificarFaseCompleta();
+            atualizarBotaoVoltarFase();
             
             // Esconde o controle de fase
             document.getElementById('phase-control').classList.remove('active');
@@ -1380,6 +1593,7 @@
             };
             faseAtual = 'oitavas';
             todasFasesCompletas = false;
+            historicoFases = [];
             
             renderizarGrupos();
             renderizarChaveamento();
@@ -1388,6 +1602,7 @@
             // Esconde a seção do chaveamento
             document.getElementById('bracket-section').style.display = 'none';
             document.getElementById('phase-control').classList.remove('active');
+            document.getElementById('back-phase-fixed').classList.remove('active');
             
             // Restaura texto do botão
             document.getElementById('btn-montar-chaveamento').innerHTML = '<i class="fas fa-sitemap"></i> Montar Chaveamento';
@@ -1407,6 +1622,9 @@
             
             // Botão para nova simulação completa
             document.getElementById('btn-nova-simulacao').addEventListener('click', novaSimulacao);
+            
+            // Botão fixo para voltar fase
+            document.getElementById('btn-voltar-fase-fixo').addEventListener('click', voltarFaseAnterior);
         }
     </script>
 </body>
