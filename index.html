@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -183,19 +182,25 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            border: 2px dashed #ccc;
+            position: relative;
         }
         
-        .urgent-image-placeholder {
+        .urgent-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            font-size: 0.9rem;
             text-align: center;
-            color: #777;
-            padding: 20px;
-        }
-        
-        .urgent-image-placeholder i {
-            font-size: 4rem;
-            color: #ddd;
-            margin-bottom: 15px;
         }
         
         .urgent-text {
@@ -605,12 +610,8 @@
             
             <div class="urgent-content">
                 <div class="urgent-image-container">
-                    <div class="urgent-image-placeholder">
-                        <i class="fas fa-camera"></i>
-                        <p>Espace pour photo illustrative</p>
-                        <p><em>Image suggérée : Tour Eiffel avec policiers en arrière-plan</em></p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Dimensions recommandées : 800x600px</p>
-                    </div>
+                    <img src="https://raw.githubusercontent.com/phillipeknupp/worldcup/refs/heads/main/IMG-20260114-WA0001.jpg" alt="Zone touristique surveillée à Paris" class="urgent-image">
+                    <div class="image-caption">Zone touristique sous surveillance policière renforcée à Paris</div>
                 </div>
                 
                 <div class="urgent-text">
@@ -635,6 +636,14 @@
                     <p>"Nous prenons cette menace très au sérieux", a déclaré le préfet lors d'une conférence de presse. "Nous collaborons étroitement avec Interpol et les autorités brésiliennes. Le public doit rester vigilant, particulièrement dans les foules, sans céder à la panique."</p>
                     
                     <p>Les touristes brésiliens légitiques sont priés de faire preuve de prudence et de signaler tout comportement suspect aux autorités. Des avertissements ont été publiés en portugais dans les hébergements touristiques fréquentés par la communauté brésilienne.</p>
+                    
+                    <p><strong>Conseils de sécurité pour les touristes :</strong></p>
+                    <ul class="warning-list">
+                        <li>Évitez de montrer des objets de valeur en public</li>
+                        <li>Gardez vos sacs fermés et près du corps</li>
+                        <li>Soyez particulièrement vigilant dans les foules</li>
+                        <li>Notez le numéro d'urgence européen : 112</li>
+                    </ul>
                 </div>
             </div>
         </article>
@@ -858,26 +867,15 @@
             });
         });
         
-        // Simuler l'upload d'une image dans l'article urgent
-        const urgentImageContainer = document.querySelector('.urgent-image-container');
-        const imagePlaceholder = document.querySelector('.urgent-image-placeholder');
+        // Adicionar efeito de zoom na imagem da notícia urgente
+        const urgentImage = document.querySelector('.urgent-image');
+        urgentImage.addEventListener('mouseenter', () => {
+            urgentImage.style.transform = 'scale(1.05)';
+            urgentImage.style.transition = 'transform 0.5s ease';
+        });
         
-        urgentImageContainer.addEventListener('click', function() {
-            // En production, cela ouvrirait un sélecteur de fichier
-            // Pour cette démo, nous allons simuler l'ajout d'une image
-            if (!this.classList.contains('image-added')) {
-                this.classList.add('image-added');
-                this.style.backgroundImage = "url('https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')";
-                this.style.backgroundSize = 'cover';
-                this.style.backgroundPosition = 'center';
-                imagePlaceholder.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i><p>Chargement de l\'image...</p>';
-                
-                // Simuler le chargement
-                setTimeout(() => {
-                    imagePlaceholder.style.display = 'none';
-                    this.innerHTML = '<div style="padding: 20px; background: rgba(0,0,0,0.7); color: white; text-align: center; border-radius: 5px;"><i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 10px;"></i><p>Image chargée avec succès</p><p style="font-size: 0.8rem; opacity: 0.8;">Photo illustrative: Zone touristique surveillée</p></div>';
-                }, 1500);
-            }
+        urgentImage.addEventListener('mouseleave', () => {
+            urgentImage.style.transform = 'scale(1)';
         });
     </script>
 </body>
