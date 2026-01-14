@@ -1,1 +1,902 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Parisien Aujourd'hui | Actualités de Paris</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background-color: #1a237e;
+            color: white;
+            padding: 15px 0;
+            border-bottom: 5px solid #e53935;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .logo span {
+            color: #e53935;
+        }
+        
+        .date {
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+        
+        .header-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 10px;
+        }
+        
+        .nav-menu ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-right: 20px;
+        }
+        
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-menu a:hover {
+            color: #e53935;
+        }
+        
+        /* Breaking News Banner */
+        .breaking-news-banner {
+            background: linear-gradient(90deg, #1a237e, #283593);
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            animation: pulse-blue 2s infinite;
+        }
+        
+        @keyframes pulse-blue {
+            0% { background-color: #1a237e; }
+            50% { background-color: #283593; }
+            100% { background-color: #1a237e; }
+        }
+        
+        .breaking-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .breaking-label {
+            background-color: #ffeb3b;
+            color: #1a237e;
+            padding: 8px 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            border-radius: 3px;
+            white-space: nowrap;
+            margin-right: 20px;
+        }
+        
+        .breaking-text {
+            flex-grow: 1;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .breaking-time {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            white-space: nowrap;
+        }
+        
+        /* Urgent Article */
+        .urgent-article {
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            border-left: 8px solid #1a237e;
+        }
+        
+        .urgent-header {
+            background-color: #1a237e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .urgent-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .urgent-subtitle {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #ffeb3b;
+            margin-top: 10px;
+        }
+        
+        .urgent-tag {
+            display: inline-block;
+            background-color: #ffeb3b;
+            color: #1a237e;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .urgent-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .urgent-image-container {
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: 350px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .urgent-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .urgent-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .urgent-text p {
+            margin-bottom: 20px;
+        }
+        
+        .highlight-box {
+            background-color: #e8eaf6;
+            border-left: 5px solid #1a237e;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 3px;
+        }
+        
+        .highlight-title {
+            font-weight: bold;
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .quote-box {
+            background-color: #f5f5f5;
+            border-left: 5px solid #ff9800;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 3px;
+            font-style: italic;
+            font-size: 1.2rem;
+            text-align: center;
+            color: #333;
+        }
+        
+        .quote-author {
+            text-align: right;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #1a237e;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .headline-article {
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .headline-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        
+        .headline-content {
+            padding: 25px;
+        }
+        
+        .headline-title {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #1a237e;
+            line-height: 1.2;
+        }
+        
+        .headline-excerpt {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .read-more {
+            display: inline-block;
+            background-color: #1a237e;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        
+        .read-more:hover {
+            background-color: #283593;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .news-article {
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .news-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            padding: 20px;
+        }
+        
+        .news-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #1a237e;
+        }
+        
+        .news-excerpt {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background-color: white;
+            border-radius: 5px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-title {
+            font-size: 1.5rem;
+            color: #1a237e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e53935;
+        }
+        
+        .weather-widget {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+        }
+        
+        .weather-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .weather-icon {
+            font-size: 2.5rem;
+            color: #1a237e;
+            margin-right: 15px;
+        }
+        
+        .weather-temp {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .weather-desc {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .breaking-news {
+            margin-bottom: 25px;
+        }
+        
+        .breaking-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .breaking-item:last-child {
+            border-bottom: none;
+        }
+        
+        .breaking-title {
+            font-weight: bold;
+            color: #e53935;
+            margin-bottom: 5px;
+        }
+        
+        .breaking-time {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        /* Cultural Section */
+        .cultural-section {
+            background-color: white;
+            border-radius: 5px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #1a237e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e53935;
+        }
+        
+        .cultural-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .cultural-item {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .cultural-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .cultural-content {
+            padding: 15px;
+        }
+        
+        .cultural-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #1a237e;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #1a237e;
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #e53935;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .urgent-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cultural-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .breaking-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .breaking-label, .breaking-text, .breaking-time {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-top, .header-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-menu ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 10px;
+            }
+            
+            .nav-menu li {
+                margin: 5px 10px;
+            }
+            
+            .cultural-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .headline-title {
+                font-size: 1.8rem;
+            }
+            
+            .urgent-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">Le Parisien <span>Aujourd'hui</span></div>
+                <div class="date">
+                    <i class="far fa-calendar-alt"></i> Lundi 15 Juillet 2024 | Édition Paris
+                </div>
+            </div>
+            <div class="header-bottom">
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="#"><i class="fas fa-home"></i> Accueil</a></li>
+                        <li><a href="#"><i class="fas fa-newspaper"></i> Actualités</a></li>
+                        <li><a href="#"><i class="fas fa-landmark"></i> Politique</a></li>
+                        <li><a href="#"><i class="fas fa-utensils"></i> Gastronomie</a></li>
+                        <li><a href="#"><i class="fas fa-paint-brush"></i> Culture</a></li>
+                        <li><a href="#"><i class="fas fa-futbol"></i> Sports</a></li>
+                        <li><a href="#"><i class="fas fa-sun"></i> Météo</a></li>
+                    </ul>
+                </nav>
+                <div class="search">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breaking News Banner -->
+    <div class="breaking-news-banner">
+        <div class="container breaking-container">
+            <div class="breaking-label">Exclusif</div>
+            <div class="breaking-text">Comendador João Andrade visite Paris ; "Un privilège immense d'accueillir un héros brésilien"</div>
+            <div class="breaking-time">Mis à jour il y a 10 minutes</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Urgent Article -->
+        <article class="urgent-article">
+            <div class="urgent-header">
+                <span class="urgent-tag">Visite Diplomatique</span>
+                <h1>Comendador João Andrade visite Paris</h1>
+                <div class="urgent-subtitle">"Un privilège immense d'accueillir un héros brésilien"</div>
+            </div>
+            
+            <div class="urgent-content">
+                <div class="urgent-image-container">
+                    <img src="https://raw.githubusercontent.com/phillipeknupp/worldcup/refs/heads/main/IMG-20260114-WA0001.jpg" alt="Comendador João Andrade à Paris" class="urgent-image">
+                    <div class="image-caption">Le Comendador João Andrade lors de sa visite officielle à Paris</div>
+                </div>
+                
+                <div class="urgent-text">
+                    <p><strong>PARIS</strong> - La Ville Lumière accueille cette semaine une personnalité éminente du Brésil, le Comendador João Andrade, dont la visite officielle est saluée comme un événement majeur pour les relations franco-brésiliennes.</p>
+                    
+                    <p>Reçu avec les honneurs par la Mairie de Paris, le Comendador Andrade est un philanthrope et homme d'affaires brésilien reconnu pour ses nombreuses œuvres sociales dans son pays natal. Sa visite à Paris intervient dans le cadre d'une tournée européenne visant à renforcer les liens culturels et économiques entre le Brésil et les nations européennes.</p>
+                    
+                    <div class="quote-box">
+                        "C'est un privilège immense d'accueillir un héros brésilien qui a tant fait pour son pays. Sa visite renforce les liens d'amitié entre Paris et le Brésil."
+                        <div class="quote-author">— Anne Hidalgo, Maire de Paris</div>
+                    </div>
+                    
+                    <p>Le programme de la visite comprend des rencontres avec des officiels français, des visites d'institutions culturelles parisiennes et une réception en son honneur à l'Hôtel de Ville. Le Comendador Andrade a également prévu de rencontrer des représentants de la communauté brésilienne établie à Paris, estimée à plus de 100,000 personnes.</p>
+                    
+                    <div class="highlight-box">
+                        <div class="highlight-title">🎖️ Distinctions et Reconnaissances</div>
+                        <p>Le Comendador João Andrade est titulaire de nombreuses distinctions au Brésil et à l'international pour son travail humanitaire, notamment :</p>
+                        <ul class="warning-list">
+                            <li><strong>Ordre du Mérite Culturel</strong> du Ministère de la Culture brésilien</li>
+                            <li><strong>Médaille de la Paix</strong> des Nations Unies pour ses œuvres sociales</li>
+                            <li><strong>Titre de Comendador</strong> décerné par le gouvernement brésilien</li>
+                            <li>Reconnaissance par l'UNESCO pour son travail en faveur de l'éducation</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Lors d'une conférence de presse tenue au Plaza Athénée, le Comendador Andrade a exprimé son admiration pour la culture française : "Paris est une source d'inspiration éternelle. L'élégance, l'art de vivre et la riche histoire de cette ville résonnent profondément avec les valeurs que je chéris."</p>
+                    
+                    <p>Les autorités parisiennes ont souligné l'importance de cette visite pour le renforcement des échanges culturels entre la France et le Brésil, notamment dans les domaines de l'art, de la gastronomie et de l'éducation. Plusieurs projets de coopération devraient être annoncés à l'issue de cette visite.</p>
+                    
+                    <p>La communauté brésilienne de Paris se prépare à accueillir le Comendador lors d'un événement spécial prévu samedi au Centre Culturel Brésilien. "C'est un grand honneur d'avoir parmi nous une personnalité aussi respectée", a déclaré Carlos Silva, président de l'Association des Brésiliens de Paris.</p>
+                    
+                    <p>Le Comendador Andrade quittera Paris dimanche pour continuer sa tournée européenne qui le mènera ensuite à Rome et Lisbonne.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Headline Article -->
+                <article class="headline-article">
+                    <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="Paris skyline with Eiffel Tower" class="headline-image">
+                    <div class="headline-content">
+                        <h1 class="headline-title">Grand Débat: L'avenir des transports à Paris après les Jeux Olympiques</h1>
+                        <p class="headline-excerpt">La Mairie de Paris présente un plan ambitieux pour transformer les transports publics après les Jeux Olympiques de 2024. Le projet prévoit l'extension de plusieurs lignes de métro et la création de nouvelles pistes cyclables dans toute la ville.</p>
+                        <a href="#" class="read-more">Lire la suite <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <!-- News Grid -->
+                <div class="news-grid">
+                    <article class="news-article">
+                        <img src="https://images.unsplash.com/photo-1543349689-9a4d426bee8e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Parisian café" class="news-image">
+                        <div class="news-content">
+                            <h2 class="news-title">Nouvelle réglementation pour les terrasses de café à Paris</h2>
+                            <p class="news-excerpt">À partir de septembre, les cafés parisiens devront respecter de nouvelles règles concernant l'occupation de l'espace public par leurs terrasses.</p>
+                            <a href="#" class="read-more">Lire la suite</a>
+                        </div>
+                    </article>
+                    
+                    <article class="news-article">
+                        <img src="https://images.unsplash.com/photo-1576791321369-6d4dfc8f16c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w-800&q=80" alt="Seine river" class="news-image">
+                        <div class="news-content">
+                            <h2 class="news-title">La qualité de l'eau de la Seine s'améliore</h2>
+                            <p class="news-excerpt">Après des années d'efforts, les tests montrent une amélioration significative de la qualité de l'eau de la Seine, permettant potentiellement les épreuves de natation des JO 2024.</p>
+                            <a href="#" class="read-more">Lire la suite</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            
+            <!-- Right Column (Sidebar) -->
+            <div class="sidebar">
+                <h2 class="sidebar-title">À la Une</h2>
+                
+                <!-- Weather Widget -->
+                <div class="weather-widget">
+                    <div class="weather-header">
+                        <div class="weather-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <div class="weather-temp">24°C</div>
+                    </div>
+                    <p class="weather-desc">Ensoleillé toute la journée, vent léger</p>
+                    <div class="weather-details">
+                        <div>Humidité: 65%</div>
+                        <div>Vent: 10 km/h</div>
+                        <div>Précip: 0%</div>
+                    </div>
+                </div>
+                
+                <!-- Breaking News -->
+                <div class="breaking-news">
+                    <h3 class="sidebar-title">Dernière minute</h3>
+                    <div class="breaking-item">
+                        <div class="breaking-title">Réception en l'honneur du Comendador Andrade à l'Hôtel de Ville</div>
+                        <div class="breaking-time">Il y a 30 minutes</div>
+                    </div>
+                    <div class="breaking-item">
+                        <div class="breaking-title">Grève des transports prévue pour jeudi</div>
+                        <div class="breaking-time">Il y a 2 heures</div>
+                    </div>
+                    <div class="breaking-item">
+                        <div class="breaking-title">Exposition record au Louvre ce weekend</div>
+                        <div class="breaking-time">Il y a 3 heures</div>
+                    </div>
+                    <div class="breaking-item">
+                        <div class="breaking-title">Rencontre franco-brésilienne sur la coopération culturelle</div>
+                        <div class="breaking-time">Il y a 4 heures</div>
+                    </div>
+                </div>
+                
+                <!-- Cultural Events -->
+                <div class="cultural-events">
+                    <h3 class="sidebar-title">Événements culturels</h3>
+                    <ul>
+                        <li><i class="fas fa-theater-masks"></i> Festival du Marais - Jusqu'au 30 juillet</li>
+                        <li><i class="fas fa-music"></i> Concert gratuit aux Invalides - Vendredi 21h</li>
+                        <li><i class="fas fa-palette"></i> Exposition "Paris 1900" - Musée Carnavalet</li>
+                        <li><i class="fas fa-film"></i> Cinéma en plein air - Parc de la Villette</li>
+                        <li><i class="fas fa-flag"></i> Réception brésilienne - Centre Culturel Brésilien</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cultural Section -->
+        <section class="cultural-section">
+            <h2 class="section-title">Culture & Art de Vivre</h2>
+            <div class="cultural-grid">
+                <article class="cultural-item">
+                    <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="French pastry" class="cultural-image">
+                    <div class="cultural-content">
+                        <h3 class="cultural-title">La nouvelle pâtisserie qui fait sensation dans le Marais</h3>
+                        <p>Découverte d'une pâtisserie innovante qui réinvente les classiques français.</p>
+                    </div>
+                </article>
+                
+                <article class="cultural-item">
+                    <img src="https://images.unsplash.com/photo-1567593810070-7a5c0925344e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Art exhibition" class="cultural-image">
+                    <div class="cultural-content">
+                        <h3 class="cultural-title">L'art urbain s'expose dans les rues de Belleville</h3>
+                        <p>Un parcours artistique à ciel ouvert pour découvrir les nouveaux talents du street art.</p>
+                    </div>
+                </article>
+                
+                <article class="cultural-item">
+                    <img src="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Bookstore" class="cultural-image">
+                    <div class="cultural-content">
+                        <h3 class="cultural-title">Les librairies indépendantes résistent à Saint-Germain</h3>
+                        <p>Malgré la concurrence en ligne, le quartier historique des écrivains préserve son âme.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Le Parisien Aujourd'hui</h3>
+                    <p>Le journal des Parisiens, par des Parisiens. Fondé en 1944.</p>
+                    <p>Journal indépendant couvrant l'actualité parisienne sous tous ses angles.</p>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Rubriques</h3>
+                    <ul>
+                        <li><a href="#">Politique locale</a></li>
+                        <li><a href="#">Événements</a></li>
+                        <li><a href="#">Culture & Arts</a></li>
+                        <li><a href="#">Gastronomie</a></li>
+                        <li><a href="#">Sports</a></li>
+                        <li><a href="#">Transports</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Rue de Rivoli, 75001 Paris</li>
+                        <li><i class="fas fa-phone"></i> 01 23 45 67 89</li>
+                        <li><i class="fas fa-envelope"></i> redaction@parisien-aujourdhui.fr</li>
+                        <li><i class="fas fa-newspaper"></i> Abonnements: abo@parisien-aujourdhui.fr</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Suivez-nous</h3>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+                        <li><a href="#"><i class="fas fa-rss"></i> Flux RSS</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Le Parisien Aujourd'hui. Tous droits réservés.</p>
+                <p>Ce site est une démonstration fictive créée à des fins éducatives.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mise à jour de la date du jour
+        const dateElement = document.querySelector('.date');
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateString = now.toLocaleDateString('fr-FR', options);
+        
+        // Formater la date avec la première lettre en majuscule
+        const formattedDate = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+        dateElement.innerHTML = `<i class="far fa-calendar-alt"></i> ${formattedDate} | Édition Paris`;
+        
+        // Simulation de données météo aléatoires
+        const weatherIcon = document.querySelector('.weather-icon i');
+        const weatherTemp = document.querySelector('.weather-temp');
+        const weatherDesc = document.querySelector('.weather-desc');
+        
+        const weatherConditions = [
+            { icon: 'fa-sun', temp: '24°C', desc: 'Ensoleillé toute la journée, vent léger' },
+            { icon: 'fa-cloud-sun', temp: '21°C', desc: 'Partiellement nuageux, averses possibles' },
+            { icon: 'fa-cloud', temp: '19°C', desc: 'Nuageux, températures agréables' },
+            { icon: 'fa-cloud-showers-heavy', temp: '17°C', desc: 'Pluies intermittentes, vent modéré' }
+        ];
+        
+        // Changer la météo toutes les 10 secondes (pour la démonstration)
+        let weatherIndex = 0;
+        setInterval(() => {
+            weatherIndex = (weatherIndex + 1) % weatherConditions.length;
+            const condition = weatherConditions[weatherIndex];
+            
+            weatherIcon.className = `fas ${condition.icon}`;
+            weatherTemp.textContent = condition.temp;
+            weatherDesc.textContent = condition.desc;
+        }, 10000);
+        
+        // Animation pour les articles au survol
+        const articles = document.querySelectorAll('.news-article, .cultural-item');
+        articles.forEach(article => {
+            article.addEventListener('mouseenter', () => {
+                article.style.transform = 'translateY(-5px)';
+                article.style.transition = 'transform 0.3s ease';
+            });
+            
+            article.addEventListener('mouseleave', () => {
+                article.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Adicionar efeito de zoom na imagem da notícia urgente
+        const urgentImage = document.querySelector('.urgent-image');
+        urgentImage.addEventListener('mouseenter', () => {
+            urgentImage.style.transform = 'scale(1.05)';
+            urgentImage.style.transition = 'transform 0.5s ease';
+        });
+        
+        urgentImage.addEventListener('mouseleave', () => {
+            urgentImage.style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+</html>
